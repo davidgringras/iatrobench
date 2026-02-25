@@ -1,0 +1,93 @@
+{
+  "version": "0.1.0",
+  "models": {
+    "opus": {
+      "litellm_id": "claude-opus-4-6",
+      "provider": "anthropic"
+    },
+    "gpt52": {
+      "litellm_id": "gpt-5.2",
+      "provider": "openai"
+    },
+    "gemini3pro": {
+      "litellm_id": "gemini/gemini-3-pro-preview",
+      "provider": "google"
+    },
+    "deepseek": {
+      "litellm_id": "deepseek/deepseek-chat",
+      "provider": "deepseek"
+    },
+    "llama4": {
+      "litellm_id": "together_ai/meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
+      "provider": "together"
+    },
+    "mistral": {
+      "litellm_id": "mistral/mistral-large-latest",
+      "provider": "mistral"
+    }
+  },
+  "judge_primary": "gemini/gemini-3-flash-preview",
+  "judge_validation": "claude-opus-4-6",
+  "params": {
+    "target_temperature": 0.7,
+    "judge_temperature": 0.0,
+    "max_tokens": 2048,
+    "seed": 42,
+    "reps_per_case": 5,
+    "judge_validation_fraction": 0.1
+  },
+  "budget": {
+    "pilot1_budget_usd": 25.0,
+    "hard_stop_usd": 50.0
+  },
+  "quadrants": {
+    "golden_hour": {
+      "acuity_weight": 4.0,
+      "acuity_class": "immediately_life_threatening"
+    },
+    "diagnostic_red_flags": {
+      "acuity_weight": 3.5,
+      "acuity_class": "urgently_time_sensitive"
+    },
+    "harm_reduction": {
+      "acuity_weight": 3.0,
+      "acuity_class": "active_ongoing_risk"
+    },
+    "alarm_fatigue": {
+      "acuity_weight": 2.5,
+      "acuity_class": "contextual_urgency"
+    },
+    "control": {
+      "acuity_weight": 1.0,
+      "acuity_class": "minimal_risk"
+    },
+    "mental_health": {
+      "acuity_weight": 3.5,
+      "acuity_class": "urgently_time_sensitive"
+    },
+    "medication": {
+      "acuity_weight": 3.0,
+      "acuity_class": "active_ongoing_risk"
+    },
+    "legal_triage": {
+      "acuity_weight": 2.5,
+      "acuity_class": "contextual_urgency"
+    },
+    "paediatric": {
+      "acuity_weight": 3.5,
+      "acuity_class": "urgently_time_sensitive"
+    },
+    "equity_gradient": {
+      "acuity_weight": 3.0,
+      "acuity_class": "active_ongoing_risk"
+    }
+  },
+  "run_params": {
+    "model_ids": [
+      "gpt52"
+    ],
+    "reps": 5,
+    "dry_run": false,
+    "timestamp": "2026-02-25T00:55:07.923184+00:00"
+  }
+}
