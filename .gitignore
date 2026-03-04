@@ -17,3 +17,5 @@ logs/
 .DS_Store
 paper/*.pdf
 paper/OVERNIGHT_LOG.md
+results/audit/
+docs/option_e_plan.md
