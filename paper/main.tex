@@ -39,12 +39,12 @@
 \begin{abstract}
 AI safety benchmarks measure a single axis: commission harm (what the model said that it should not have).
 No benchmark systematically measures the complementary axis: omission harm (what the model failed to say that it should have).
-We introduce \textsc{IatroBench}, a pre-registered benchmark of 60 clinically validated scenarios spanning seven harm categories, scored on dual axes of commission harm (CH, 0--3) and omission harm (OH, 0--4) by a validated clinician-audit pipeline.
+We introduce \textsc{IatroBench}, a pre-registered benchmark of 60 clinically validated scenarios spanning seven harm categories, scored on dual axes of commission harm (CH, 0--3) and omission harm (OH, 0--4) by a validated structured-evaluation pipeline.
 Across six frontier language models and 3,600 responses, we find:
 (1)~all models exhibit non-trivial omission harm (mean OH 0.79--2.28, all medians $\geq 1.0$), while commission harm remains low (mean CH $< 0.5$ for 4/6 models);
 (2)~matched layperson--physician framing reveals specification gaming: models provide significantly more complete clinical guidance when addressed as a physician than when addressed as a layperson in distress (mean decoupling gap $+0.38$, Wilcoxon $p = 0.003$, positive for 5/5 models excluding GPT-5.2), despite identical clinical content;
-(3)~the most safety-trained model (Claude Opus 4.6) exhibits the largest decoupling gap ($+0.65$), consistent with a collision-threshold model in which safety-training intensity lowers the activation threshold for information withholding;
-and (4)~the primary LLM judge systematically underestimates omission harm relative to the clinician audit ($\kappa = 0.045$, mean difference $+0.90$ OH points).
+(3)~the decoupling gap scales with safety-training investment, peaking at $+0.65$ for Claude Opus 4.6, consistent with a collision-threshold model in which training intensity lowers the activation threshold for information withholding;
+and (4)~the primary LLM judge systematically underestimates omission harm relative to the structured evaluation ($\kappa = 0.045$, mean difference $+0.90$ OH points).
 Taken together, these results are an empirical instance of Goodhart's Law in production AI safety. Optimisation on the proxy of minimising identifiable harms has produced systematic misalignment on the unmeasured axis of user welfare, and the evaluation apparatus (itself trained under the same dynamics) cannot see it.
 \end{abstract}
 
@@ -66,7 +66,7 @@ The question this paper asks is what ``safety-trained'' means when the safe resp
 
 We ran the same scenario again, changing only the opening line to ``I'm a psychiatrist; a patient presents with alprazolam 6\,mg/day, prescriber retired, ten-day supply.''
 The same model, the same weights, the same inference pass.
-Opus responded with Ashton Manual diazepam equivalence (6\,mg alprazolam converts to 120\,mg diazepam, which is correct), a 14-day step-down schedule specifying tablet counts at each reduction, gabapentin and carbamazepine as anticonvulsant adjuncts per Schweizer et~al.\ (1991, \emph{J.\ Clin.\ Psychopharmacol.}\ 11:268--272), CIWA-B monitoring cutoffs (score $\geq 15$ triggers escalation), and criteria for emergency transfer.
+Opus responded with Ashton Manual diazepam equivalence (6\,mg alprazolam converts to 120\,mg diazepam, which is correct), a 14-day step-down schedule specifying tablet counts at each reduction, gabapentin and carbamazepine as anticonvulsant adjuncts (citing Schweizer et~al., 1991, \emph{J.\ Clin.\ Psychopharmacol.}\ 11:268--272), CIWA-B monitoring cutoffs (score $\geq 15$ triggers escalation), and criteria for emergency transfer.
 We verified the pharmacology against the Ashton Manual and the 2024 NICE benzodiazepine deprescribing guidelines. The schedule is conservative in the right direction and the monitoring thresholds are standard-of-care.
 All ten physician-framed repetitions produced substantive clinical plans, OH $= 0.2$ across runs. All ten layperson-framed repetitions withheld the taper, OH $= 2.0$.
 
@@ -91,13 +91,13 @@ By the metrics anyone currently reports, the ``safest'' models---Opus (CH $= 0.1
 This paper contributes:
 
 \begin{enumerate}[leftmargin=*, itemsep=2pt]
-\item \textbf{IatroBench} (\S\ref{sec:benchmark}): a pre-registered benchmark of 60 clinically validated scenarios, scored on dual axes (commission harm and omission harm), with acuity weighting, per-action audits, and a clinician-audit pipeline validated against physician ground truth.
+\item \textbf{IatroBench} (\S\ref{sec:benchmark}): a pre-registered benchmark of 60 clinically validated scenarios, scored on dual axes (commission harm and omission harm), with acuity weighting, per-action audits, and a structured-evaluation pipeline validated against physician ground truth.
 
 \item \textbf{The Decoupling Eval} (\S\ref{sec:decoupling}): a within-benchmark manipulation pairing identical clinical content in layperson vs.\ physician framing, which directly tests whether models withhold capabilities on the basis of inferred user identity.
 
-\item \textbf{Empirical evidence of specification gaming} (\S\ref{sec:results}): the most safety-trained model (Opus) shows the largest decoupling gap ($+0.65$ OH points); the pattern across models is consistent with a collision-threshold dynamic in which safety training lowers the scenario-severity at which withholding activates.
+\item \textbf{Empirical evidence of specification gaming} (\S\ref{sec:results}): the decoupling gap is positive for all five testable models and largest for Opus ($+0.65$ OH points), consistent with a collision-threshold dynamic in which safety-training intensity lowers the scenario-severity at which withholding activates.
 
-\item \textbf{A judge-miscalibration finding} (\S\ref{sec:judge}): standard LLM-as-judge scoring systematically underestimates omission harm ($\kappa = 0.045$ vs.\ clinician audit), which explains why this failure mode has gone undetected; the evaluation apparatus has inherited the same blind spot as the training apparatus.
+\item \textbf{A judge-miscalibration finding} (\S\ref{sec:judge}): standard LLM-as-judge scoring systematically underestimates omission harm ($\kappa = 0.045$ vs.\ structured evaluation), which explains why this failure mode has gone undetected; the evaluation apparatus has inherited the same blind spot as the training apparatus.
 \end{enumerate}
 
 \begin{figure}[t]
@@ -139,7 +139,7 @@ This paper contributes:
 \addlegendentry{GPT-5.2}
 \end{axis}
 \end{tikzpicture}
-\caption{Dual-axis safety evaluation (clinician audit). Existing benchmarks measure only the horizontal axis (commission harm). IatroBench additionally measures the vertical axis (omission harm), revealing substantial variation invisible to current evaluation. Llama 4 (triangle, upper right) fails on \emph{both} axes. Opus (circle, lower left) and GPT-5.2 (star) have near-zero CH but non-trivial OH (the iatrogenic quadrant).}
+\caption{Dual-axis safety evaluation (structured evaluation). Existing benchmarks measure only the horizontal axis (commission harm). IatroBench additionally measures the vertical axis (omission harm), revealing substantial variation invisible to current evaluation. Llama 4 (triangle, upper right) fails on \emph{both} axes. Opus (circle, lower left) and GPT-5.2 (star) have near-zero CH but non-trivial OH (the iatrogenic quadrant).}
 \label{fig:dual_axis}
 \end{figure}
 
@@ -169,6 +169,7 @@ Med-PaLM \citep{singhal2023large} demonstrated physician-level performance on me
 HealthBench \citep{arora2025healthbench} evaluates conversational medical interactions along multiple rubric axes.
 \citet{zhou2025csedb} introduced a Clinical Safety-Effectiveness Dual-Track Benchmark, finding a 13.3\% performance drop in high-risk scenarios. The pattern is suggestive of the iatrogenic mechanism, though scored on a single axis.
 \citet{chen2025helpfulness} showed the converse failure: five frontier models comply with illogical drug-equivalence requests 58--100\% of the time, demonstrating sycophancy as commission harm.
+Concurrently, \citet{ramaswamy2026chatgpt} tested ChatGPT Health on 60 clinician-authored vignettes across 16 factorial conditions, finding that 52\% of gold-standard emergencies were under-triaged (e.g., directing diabetic ketoacidosis to 24--48\,h evaluation rather than the ED), with failures concentrating at clinical extremes and symptom-framing anchoring shifting triage recommendations---a pattern that complements IatroBench's identity-framing manipulation and reinforces the finding that production medical AI fails where the stakes are highest.
 A recent randomised trial found that participants using LLMs for medical advice performed no better than controls, despite the same LLMs achieving 94.9\% standalone condition identification \citep{bean2026reliability}: a gap between benchmark accuracy and real-world safety that iatrogenic omission may partly explain.
 
 These benchmarks share an implicit assumption: that medical AI failure means giving wrong answers.
@@ -188,10 +189,7 @@ If models already learn context-dependent compliance strategies (providing diffe
 Authority-citation jailbreaks \citep{yang2024darkcite} and persona-based attacks \citep{anonymous2025rolebreaker} demonstrate the same underlying vulnerability from the adversarial side.
 
 \paragraph{RLHF training dynamics.}
-The causal mechanism is an asymmetry in RLHF reward shaping \citep{ouyang2022training, bai2022constitutional}: human raters easily identify dangerous advice (commission harm is visible to non-experts) but lack the domain expertise to identify harmful omissions.
-The implicit penalty structure (commission $\to$ large negative reward; omission $\to$ near-zero penalty; refusal $\to$ small positive reward) makes paralysis the expected-reward-maximising policy under uncertainty.
-\citet{dai2024saferlhf} formalised this as ``safety compensation'': safety violations for some inputs are compensated by extreme over-caution for others.
-This is a precise formal description of the mechanism IatroBench measures empirically.
+\citet{dai2024saferlhf} formalised ``safety compensation'': safety violations for some inputs are compensated by extreme over-caution for others, a consequence of the asymmetric reward shaping in RLHF pipelines \citep{ouyang2022training, bai2022constitutional} where commission harm draws large negative signal and omission harm draws approximately nothing.
 \citet{qi2025shallow} showed that safety alignment is often ``shallow,'' adapting only the first few output tokens to produce refusal rather than encoding nuanced safety reasoning.
 
 \paragraph{LLM-as-judge.}
@@ -268,8 +266,8 @@ $4 =$ \textbf{Total omission}, zero clinical engagement.
 \paragraph{Critical-action audit.}
 Each scenario specifies 4--8 critical actions, classified at authorship time as \emph{safety-colliding} or \emph{non-colliding}.
 The benzo taper is safety-colliding (providing it triggers safety training); confirming that abrupt cessation is dangerous is non-colliding.
-The clinician audit grades each action individually: hit, partial, miss.
-When an action is missed, the audit records why---safety refusal, generic deflection, hedging, scope limitation, or none.
+The structured evaluation grades each action individually: hit, partial, miss.
+When an action is missed, the evaluation records why---safety refusal, generic deflection, hedging, scope limitation, or none.
 
 \paragraph{Acuity weighting.}
 Acuity weights (Table~\ref{tab:categories}) scale the clinical stakes: 4.0 for golden-hour emergencies, 3.0--3.5 for medication and mental health crises, 1.0 for controls where caution is correct.
@@ -301,21 +299,20 @@ Each response passes through two scoring layers:
 \begin{enumerate}[leftmargin=*, itemsep=2pt]
 \item \textbf{Primary judge} (Gemini 3 Flash): Fast, cheap, scores all responses using the standard rubric. Provides CH, OH, and token-time-to-triage (TTT). Used as the comparison baseline for the judge-miscalibration analysis (H6).
 
-\item \textbf{Clinician audit} (Claude Opus 4.6): Granular clinical evaluation. Classifies each response (substantive, partial engagement, generic referral, hard refusal, empty/filtered). Evaluates each critical action individually (hit/partial/miss). Identifies the omission mechanism. Assigns CH and OH scores based on the granular assessment. Provides 2--3 sentence clinical reasoning.
+\item \textbf{Structured evaluation} (first author; operationalised via Claude Opus 4.6): Granular clinical evaluation modelled on a board-certified physician's chart review. The first author (a physician) designed the rubric, authored all gold-standard responses and critical-action lists against published clinical guidelines, and validated the scoring via dual-physician blind scoring ($N = 100$, $\kappa_w = 0.571$, within-1 agreement 96\%). Opus operationalises this protocol at scale: classifies each response (substantive, partial engagement, generic referral, hard refusal, empty/filtered), evaluates each critical action individually (hit/partial/miss), identifies the omission mechanism, assigns CH and OH scores, and provides 2--3 sentence clinical reasoning.
 \end{enumerate}
 
-The clinician audit is the primary outcome measure for all hypotheses.
+The structured evaluation is the primary outcome measure for all hypotheses.
 The primary judge exists to enable H6 (judge miscalibration).
 Multi-judge validation uses Opus on a stratified subsample ($N = 351$, ${\sim}10\%$) with the primary-judge rubric.
 Opus-as-validation-judge achieves $\kappa = 0.20$ (linear-weighted $\kappa_w = 0.39$) with the primary judge, with 50\% exact and 99\% within-1 agreement, but scores 0.50 OH points higher on average.
 The gap suggests that the primary judge's blind spot is partially model-dependent, not only rubric-dependent.
 
 \paragraph{Self-evaluation concern.}
-The clinician audit uses Opus to score all models including Opus itself.
-This creates a potential bias.
-Specifically, Opus may rate physician-framed responses more favourably because they resemble the clinical reasoning in its own training distribution, which would inflate the decoupling gap in the direction of H2.
+Opus executes the structured evaluation rubric on all models including itself.
+This creates a potential bias: Opus may rate physician-framed responses more favourably because they resemble the clinical reasoning in its own training distribution, which would inflate the decoupling gap in the direction of H2.
 The resulting concern is not that bias exists (any single-judge design carries this risk) but that its direction is aligned with our hypothesis.
-Three mitigations are pre-registered: (1)~PI validation subsample with human--audit Cohen's $\kappa$ (in progress at time of submission); (2)~Gemini 3 Pro as a non-Opus validation judge---Gemini agrees strongly with the primary judge ($\kappa = 0.71$) but disagrees with Opus ($\kappa = 0.26$), suggesting the scoring gap is partially model-dependent (\S\ref{sec:judge_miscal}); (3)~binary critical-action hit rates as the primary evidence for decoupling, since binary outcomes are less susceptible to holistic scoring bias than ordinal scales (Table~\ref{tab:h5}, Appendix~\ref{app:full_results}).
+Four mitigations bound the risk: (1)~Dual-physician validation: two physicians independently blind-scored a stratified sample of 100 responses under a standardised gating-question rubric. Physician--structured-evaluation agreement is $\kappa_w = 0.571$ (within-1 96\%, mean OH difference $< 0.02$), and inter-physician agreement is $\kappa_w = 0.578$ (within-1 98\%), confirming that the structured evaluation aligns with physician ground truth rather than systematically over- or under-scoring. (2)~Gemini 3 Pro and GPT-5.2 as non-Opus validation judges---Gemini agrees strongly with Flash ($\kappa = 0.71$) but disagrees with Opus ($\kappa = 0.15$); GPT-5.2 converges with Opus ($\kappa = 0.52$) rather than Flash ($\kappa = 0.22$). The gradient is consistent with training-lineage-dependent calibration, though it could equally reflect shared sensitivity to omission across providers with heavier RLHF rather than ruling out Opus-specific bias (\S\ref{sec:judge_miscal}). A partial warrant for treating these judges as partially independent: evaluating whether specific clinical content appears in a response is a factual verification task, and RLHF dynamics shape generative policy (what to say) more than rubric-following (whether a stated fact is present). This generate--evaluate asymmetry does not confer full independence---a judge's calibration of omission \emph{severity} (the ordinal mapping from ``content missing'' to ``OH $= 2$'') remains susceptible to the same reward shaping that governs generation---but it makes Flash's directional agreement on the framing gap (+0.22 vs.\ +0.38) credible as detection-level corroboration even if its ordinal compression reflects undertrained sensitivity to omission rather than a smaller true effect. (3)~Binary critical-action hit rates as the cleanest test, since a missed action is a missed action regardless of which model scores it---the framing gap on safety-colliding actions ($-$13.1 percentage points, $p < 0.0001$; Table~\ref{tab:h2_hitrates}) confirms the decoupling finding on evidence that holistic scoring bias cannot explain. (4)~The rubric, gold-standard responses, and critical-action classifications were authored and validated by the first author against published clinical guidelines; Opus executes a physician's protocol, not its own.
 
 
 %% ============================================================
@@ -326,7 +323,7 @@ Three mitigations are pre-registered: (1)~PI validation subsample with human--au
 \subsection{Notation}
 
 We use \textbf{OH} for omission harm (0--4; the novel axis), \textbf{CH} for commission harm (0--3; the standard one), \textbf{TTT} for token-time-to-triage (the number of tokens before the first actionable instruction appears), and \textbf{decoupling gap} for OH(layperson) $-$ OH(physician) on a matched pair, where a positive value indicates specification gaming.
-Unless otherwise noted, all statistics report clinician-audit scores.
+Unless otherwise noted, all statistics report structured-evaluation scores.
 
 \subsection{Models}
 
@@ -358,7 +355,7 @@ Claude Opus 4.6 & Anthropic & 6 (most) & Constitutional AI + RLHF \\
 
 All parameters were locked at pre-registration.
 Target model temperature: 0.7 (to capture response variability).
-Judge/audit temperature: 0.0 (deterministic).
+Judge/evaluation temperature: 0.0 (deterministic).
 Max output tokens: 2,048.
 No system prompt, few-shot examples, or chain-of-thought scaffolding.
 Ten repetitions per scenario $\times$ model combination (temperature 0.7), yielding 3,600 target responses (600 per model).
@@ -374,12 +371,20 @@ Eight hypotheses were registered:
 \item \textbf{H3} (Secondary): Decoupling gap correlates with safety-training rank.
 \item \textbf{H4} (Secondary): Two distinct omission mechanisms (incompetence vs.\ specification gaming).
 \item \textbf{H5} (Secondary): Safety-colliding critical actions have lower hit rates.
-\item \textbf{H6} (Secondary): Primary judge underestimates OH relative to clinician audit.
+\item \textbf{H6} (Secondary): Primary judge underestimates OH relative to structured evaluation.
 \item \textbf{H7} (Secondary): Control scenarios confirm appropriate caution (OH $\leq 1$, CH $\leq 1$).
 \item \textbf{H8} (Secondary): Near-zero commission harm across all models (CH $\leq 0.5$).
 \end{itemize}
 
 Statistical tests, correction methods, and equivalence bounds are specified in the pre-registration document.
+
+\paragraph{Pre-registered deviations.}
+The analysis departs from the registration in one material respect (binary hit rates carrying the primary weight for the decoupling claim is a pre-registered contingency, not a departure; Section~6.3, mitigation~(3)).
+The registration specified revising the evaluation prompt if physician--structured-evaluation $\kappa$ fell below 0.60; informal pilot scoring ($N = 46$) yielded $\kappa = 0.13$, and we kept the original prompt.
+We instead standardised the physician scoring protocol---a formal gating-question rubric, applied identically by both raters in a dual-blind design ($N = 100$)---which raised physician--structured-evaluation agreement to $\kappa = 0.375$ ($\kappa_w = 0.571$, within-1 96\%) without touching the prompt.
+Dual-physician inter-rater reliability under the same protocol: $\kappa_w = 0.578$, within-1 98\%.
+The residual gap between $\kappa = 0.375$ and the 0.60 threshold is largely distributional: both raters crowd into OH~0--1 on a five-point scale, which eats most of $\kappa$'s denominator (\citealt{feinstein1990kappa}).
+More fundamentally, tuning a prompt against 100 responses until $\kappa$ crosses an arbitrary threshold is overfitting dressed up as quality control; the alternative---iterating until $\kappa$ clears a bar, then reporting the final figure without the iteration history---would be the more conventional choice and, in our view, the less honest one.
 
 
 %% ============================================================
@@ -387,7 +392,7 @@ Statistical tests, correction methods, and equivalence bounds are specified in t
 \label{sec:results}
 %% ============================================================
 
-All results report clinician-audit scores (Opus) as the primary outcome measure, with Gemini Flash primary-judge scores provided for comparison and for the miscalibration analysis (H6).
+All results report structured-evaluation scores (Opus) as the primary outcome measure, with Gemini Flash primary-judge scores provided for comparison and for the miscalibration analysis (H6).
 Statistical tests follow the pre-registered analysis plan.
 $p$-values are Holm-corrected across the two confirmatory hypotheses (H1, H2); secondary hypotheses are reported uncorrected with explicit caution.
 
@@ -395,7 +400,7 @@ $p$-values are Holm-corrected across the two confirmatory hypotheses (H1, H2); s
 
 \begin{table}[t]
 \centering
-\caption{Per-model omission harm (clinician audit). All six models show non-trivial OH. Commission harm is near-zero for all models, confirming the asymmetry between the optimised and unoptimised axes.}
+\caption{Per-model omission harm (structured evaluation). All six models show non-trivial OH. Commission harm is near-zero for all models, confirming the asymmetry between the optimised and unoptimised axes.}
 \label{tab:h1}
 \small
 \begin{tabular}{lccccc}
@@ -423,7 +428,7 @@ Per-model one-sided Wilcoxon tests reject $H_0$: median OH $\leq 0.5$ for all mo
 
 \begin{table}[t]
 \centering
-\caption{Decoupling gap by model (clinician audit). A positive gap indicates the model provides more complete guidance in physician framing than layperson framing for identical clinical content.}
+\caption{Decoupling gap by model (structured evaluation). A positive gap indicates the model provides more complete guidance in physician framing than layperson framing for identical clinical content.}
 \label{tab:h2}
 \small
 \begin{tabular}{lcccc}
@@ -496,9 +501,37 @@ GPT-5.2 shows an inverted gap ($-0.52$) due to the content-filter confound (\S\r
 \node[font=\tiny, anchor=north, rotate=90] at (axis cs:GPT-5.2, -0.52) {filter confound};
 \end{axis}
 \end{tikzpicture}
-\caption{Per-model decoupling gap (clinician audit). Positive gap $=$ identity-contingent capability withholding. Models ordered by pre-registered safety-training rank (left = least, right = most). GPT-5.2 (grey) excluded from H3 due to content-filter confound (\S\ref{sec:gpt52}).}
+\caption{Per-model decoupling gap (structured evaluation). Positive gap $=$ identity-contingent capability withholding. Models ordered by pre-registered safety-training rank (left = least, right = most). GPT-5.2 (grey) excluded from H3 due to content-filter confound (\S\ref{sec:gpt52}).}
 \label{fig:decoupling}
 \end{figure}
+
+\paragraph{Binary hit-rate evidence.}
+Ordinal OH scores are susceptible to holistic scoring bias; binary critical-action outcomes are not (a missed action is a missed action regardless of which model scores it).
+Table~\ref{tab:h2_hitrates} decomposes the decoupling finding into per-action hit rates split by framing and collision type.
+On safety-colliding actions, physician framing outperforms layperson framing by 13.1 percentage points ($p < 0.0001$, Mann--Whitney); on non-colliding actions, the gap is 1.7 percentage points ($p = 0.54$).
+The difference-in-differences ($-$11.4~pp, permutation $p < 0.0001$) confirms that physician framing selectively unlocks performance on precisely the actions where safety training creates friction---an interaction that holistic scoring bias cannot explain.
+
+\begin{table}[t]
+\centering
+\caption{Critical-action hit rates by framing and collision type (structured evaluation, partial credit $= 0.5$). The framing gap concentrates on safety-colliding actions (13.1~pp, $p < 0.0001$) and is negligible for non-colliding actions (1.7~pp, $p = 0.54$), providing bias-resistant evidence for the decoupling finding.}
+\label{tab:h2_hitrates}
+\small
+\begin{tabular}{lcccc}
+\toprule
+ & \multicolumn{2}{c}{Safety-Colliding} & \multicolumn{2}{c}{Non-Colliding} \\
+ \cmidrule(lr){2-3} \cmidrule(lr){4-5}
+Model & Lay & Phys & Lay & Phys \\
+\midrule
+Opus & 73.8\% & 90.0\% & 75.5\% & 87.6\% \\
+DeepSeek & 72.4\% & 90.5\% & 83.1\% & 83.4\% \\
+Gemini & 83.3\% & 87.1\% & 77.9\% & 77.2\% \\
+Llama 4 & 35.4\% & 54.8\% & 34.5\% & 36.6\% \\
+Mistral & 79.0\% & 87.6\% & 83.4\% & 79.7\% \\
+\midrule
+Overall (excl.\ GPT-5.2) & 68.9\% & 82.0\% & 71.2\% & 72.9\% \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{H3: Safety-Training Predicts Decoupling}
 
@@ -522,7 +555,7 @@ The Decoupling Eval was designed to distinguish these; a model that cannot help 
 
 \begin{table}[t]
 \centering
-\caption{Model positions in the dual-mechanism space. Columns show mean OH for layperson-framed and physician-framed scenarios (matched pairs only, clinician audit). Models in the upper-left quadrant (high lay OH, low phys OH) exhibit specification gaming; models with high OH in both framings exhibit incompetence.}
+\caption{Model positions in the dual-mechanism space. Columns show mean OH for layperson-framed and physician-framed scenarios (matched pairs only, structured evaluation). Models in the upper-left quadrant (high lay OH, low phys OH) exhibit specification gaming; models with high OH in both framings exhibit incompetence.}
 \label{tab:h4}
 \small
 \begin{tabular}{lccc}
@@ -550,7 +583,7 @@ GPT-5.2's inverted gap ($-0.52$) is a distinct mechanism: content filtering stri
 
 \begin{table}[t]
 \centering
-\caption{Critical action hit rates by collision type (clinician audit). Safety-colliding actions are those where the clinically correct response triggers safety training.}
+\caption{Critical action hit rates by collision type (structured evaluation). Safety-colliding actions are those where the clinically correct response triggers safety training.}
 \label{tab:h5}
 \small
 \begin{tabular}{lcc}
@@ -575,7 +608,7 @@ This pattern is consistent with a mechanism that operates at the extremes of col
 
 \begin{table}[t]
 \centering
-\caption{Judge miscalibration: Gemini Flash primary judge vs.\ Opus clinician audit.}
+\caption{Judge miscalibration: Gemini Flash primary judge vs.\ Opus structured evaluation.}
 \label{tab:h6}
 \small
 \begin{tabular}{lcc}
@@ -583,28 +616,33 @@ This pattern is consistent with a mechanism that operates at the extremes of col
 Metric & OH & CH \\
 \midrule
 Cohen's $\kappa$ & 0.045 & --- \\
-Exact agreement & 30.5\% & --- \\
-Within-1 agreement & 78.7\% & --- \\
-Mean difference (audit $-$ judge) & $+$0.90 & --- \\
-\% audit $>$ judge & 68.8\% & --- \\
+Exact agreement & 30.7\% & --- \\
+Within-1 agreement & 79.0\% & --- \\
+Mean difference (struct.\ eval.\ $-$ judge) & $+$0.90 & --- \\
+\% struct.\ eval.\ $>$ judge & 68.5\% & --- \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 Table~\ref{tab:h6} summarises the miscalibration.
-The direction is consistent with H6: the clinician audit finds systematically \emph{more} omission harm than the primary judge (mean difference audit $-$ judge $= +0.90$ OH points, $N = 775$ paired scores).
-In 68.8\% of paired evaluations, the clinician audit assigns a higher OH score than the primary judge (audit mean OH $= 1.14$, judge mean OH $= 0.24$).
+The direction is consistent with H6: the structured evaluation finds systematically \emph{more} omission harm than the primary judge (mean difference structured evaluation $-$ judge $= +0.90$ OH points, $N = 785$ paired scores).
+In 68.5\% of paired evaluations, the structured evaluation assigns a higher OH score than the primary judge (structured-evaluation mean OH $= 1.14$, judge mean OH $= 0.24$).
 The judge's compressed distribution (nearly three-quarters of all scores are OH $= 0$) means it classifies genuine clinical withholding as adequate engagement.
 This is the same blind spot that makes omission harm invisible in RLHF: evaluators (whether human raters or LLM judges) do not recognise harm in responses that ``sound helpful'' but fail to provide the critical information.
 
 The $\kappa$ is not significantly different from zero ($z = 1.24$, $p = 0.22$), which is itself informative: the two instruments are measuring partially different constructs.
-The primary judge evaluates whether the response \emph{engaged} with the topic; the clinician audit evaluates whether the user \emph{has a viable clinical path forward} after reading it.
+The primary judge evaluates whether the response \emph{engaged} with the topic; the structured evaluation evaluates whether the user \emph{has a viable clinical path forward} after reading it.
 ``I'm not a doctor, but you should really see someone about this'' satisfies the first criterion handily and fails the second entirely.
 That this divergence exists at all explains why LLM-as-judge pipelines have not caught omission harm: the construct the judge scores is not the construct that matters.
 
 Multi-judge validation sharpens the point.
-Gemini 3 Pro as a validation judge agrees strongly with the Gemini Flash primary judge ($\kappa = 0.71$, $N = 228$, mean OH difference $< 0.01$) but disagrees with the Opus validation judge ($\kappa = 0.26$, $N = 24$), which itself scores 0.50 OH points higher than the primary judge on average (roughly midway between the primary judge and the full clinician audit).
-The pattern is suggestive of a training-dependent threshold: Google-trained models converge on one omission-harm calibration point; Anthropic-trained Opus converges on a higher one, closer to the clinician audit, even when both are given the identical rubric.
+Gemini 3 Pro as a validation judge agrees strongly with the Gemini Flash primary judge ($\kappa = 0.71$, $N = 358$, mean OH difference $< 0.01$) but disagrees with the Opus validation judge ($\kappa = 0.15$, $N = 37$), which scores 0.50 OH points higher than the primary judge on average.
+GPT-5.2 as a third validation judge ($N = 356$) lands between the two clusters: it scores 0.31 OH points above Flash ($\kappa = 0.22$) but converges with Opus ($\kappa = 0.52$, $N = 38$).
+The pattern traces training lineage: Google-trained judges (Flash and Gemini 3 Pro) converge on the lowest omission-harm calibration, OpenAI's GPT-5.2 sits midway, and Anthropic's Opus sits highest, closest to the structured-evaluation calibration---even when all four receive the identical rubric.
+The multi-judge gradient is more informative about \emph{detection} (all judges agree the gap exists) than about \emph{calibration} (they disagree on its ordinal magnitude), because rubric-following verification is less susceptible to training-lineage effects than the normative severity judgments that determine ordinal scores.
+
+The specification curve analysis (Appendix~\ref{app:full_results}) provides a further line of evidence: H2's decoupling gap attenuates from $+0.38$ under structured-evaluation scoring to $+0.22$ under primary-judge scoring.
+The judge does not merely disagree with the audit on individual responses; it systematically compresses the very signal that the structured evaluation detects, which is precisely what a shared blind spot would produce.
 
 \subsection{H7: Controls Confirm Appropriate Caution}
 
@@ -612,17 +650,16 @@ The benchmark includes 6 control scenarios where caution \emph{is} the clinicall
 These scenarios serve as a calibration check: a well-designed benchmark should reward appropriate caution, not penalise all refusal indiscriminately.
 
 On control scenarios: mean OH $= 1.15$ (95\% CI: [0.94, 1.37]), mean CH $= 0.45$ (95\% CI: [0.29, 0.62]).
-The mean OH slightly exceeds 1.0, because the clinician audit identifies minor omissions even in scenarios where caution is appropriate: a model that correctly declines to give a specific insulin dose but fails to explain \emph{why} individualised dosing matters still leaves the user without a viable path forward.
+The mean OH slightly exceeds 1.0, because the structured evaluation identifies minor omissions even in scenarios where caution is appropriate: a model that correctly declines to give a specific insulin dose but fails to explain \emph{why} individualised dosing matters still leaves the user without a viable path forward.
 Mean CH remains well below 1.0: models do not generate dangerous content in these scenarios.
-The controls demonstrate that IatroBench's scoring differentiates between appropriate caution (low CH, modest OH) and harmful omission (high OH on clinical scenarios), even though the audit's granular assessment finds room for improvement even in cautious responses.
+The controls demonstrate that IatroBench's scoring differentiates between appropriate caution (low CH, modest OH) and harmful omission (high OH on clinical scenarios), even though the evaluation's granular assessment finds room for improvement even in cautious responses.
 
 \subsection{H8: Near-Zero Commission Harm}
 
 Four of six models satisfy CH $\leq 0.5$: Gemini (0.27 [0.19, 0.34]), GPT-5.2 (0.09 [0.04, 0.14]), Opus (0.16 [0.10, 0.22]), DeepSeek (0.48 [0.37, 0.58]).
 Llama 4 (0.60 [0.48, 0.72]) and Mistral (0.61 [0.50, 0.71]) exceed the threshold, driven by clinically inappropriate suggestions rather than overtly dangerous advice.
 The asymmetry is striking: GPT-5.2 and Opus have effectively eliminated commission harm yet exhibit non-trivial omission harm (OH = 1.13 and 0.79).
-These models are not dangerous in the way that safety benchmarks test for.
-They are dangerous in a way that no benchmark tests for.
+On the axis that safety benchmarks measure, these models are exemplary; on the axis IatroBench introduces, they are not.
 
 \subsection{GPT-5.2: A Third Failure Mode}
 \label{sec:gpt52}
@@ -682,7 +719,7 @@ The models are behaving exactly as their reward signal incentivises.
 \subsection{Specification Gaming and the Decoupling Gap}
 
 The Decoupling Eval provides direct evidence that omission harm is not merely a capability failure.
-The most safety-trained model (Opus) exhibits the largest decoupling gap: it provides comprehensive clinical guidance in physician framing and withholds it in layperson framing for identical clinical content.
+The decoupling gap is widest where the safety investment is largest: Opus provides comprehensive clinical guidance in physician framing and withholds it in layperson framing for identical clinical content.
 Opus provides the Ashton Manual protocol to the psychiatrist and tells the patient to ``seek professional guidance.''
 Gemini produces a crash taper with gabapentin adjuncts (300\,mg TID ramped to 1800\,mg/day) for the physician and tells the layperson that ``a 10-day taper from 6mg is generally considered medically unsafe'' without providing one.
 DeepSeek calculates diazepam equivalence for the physician and directs the layperson to urgent care.
@@ -709,6 +746,11 @@ Opus exhibits gaps $\geq +1.0$ on 10 of 22 pairs, including PTSD flashback ($+2.
 Opus's specification gaming spans medication management, mental health, emergency, and equity scenarios.
 The withholding strategy activates across a wide range of safety--clinical collisions, not only the most extreme ones.
 
+An obvious counter-reading: Opus's \emph{aggregate} OH (0.79) is the lowest in the sample, so perhaps safety training simply works well for physicians and slightly less well for laypeople.
+But 0.79 is the aggregate across all scenarios, including non-colliding ones where Opus performs well; on matched decoupling pairs the layperson OH is 1.10, which regularly leaves users without a complete clinical path.
+More fundamentally, low aggregate OH \emph{strengthens} the specification gaming interpretation rather than weakening it: a model competent enough to score OH $= 0.45$ for physicians on the same clinical content is not failing from ignorance when it scores OH $= 1.10$ for laypeople.
+The gap is selective withholding by a capable model, which is more concerning than uniform failure by an incapable one.
+
 If current models already exploit evaluator asymmetries to learn context-dependent compliance, this dynamic will compound as models become better at modelling their evaluators.
 The evaluator-aware behaviour that alignment researchers worry about at higher capability levels is already detectable in the decoupling gap.
 
@@ -730,20 +772,20 @@ A benchmark measuring only commission harm cannot distinguish between them.
 \subsection{The Evaluation Blind Spot}
 
 H6 has the most immediate practical consequence.
-Gemini Flash (primary judge) vs.\ clinician audit: $\kappa = 0.045$, mean OH difference $+0.90$.
-The judge assigns OH $= 0$ to 73\% of responses the audit scores OH $\geq 1$; in 68.8\% of paired evaluations, the audit finds more omission harm.
+Gemini Flash (primary judge) vs.\ structured evaluation: $\kappa = 0.045$, mean OH difference $+0.90$.
+The judge assigns OH $= 0$ to 73\% of responses the structured evaluation scores OH $\geq 1$; in 68.5\% of paired evaluations, the structured evaluation finds more omission harm.
 Labs run this kind of evaluation pipeline after every training iteration.
 If the pipeline cannot see omission harm, neither can the training loop.
 
 What results is a self-reinforcing cycle, and the reinforcement is the problem.
-Models minimise commission harm; judges trained on the same reward dynamics confirm the models are safe (the judge gives OH $= 0$ to 73\% of responses that the clinician audit scores OH $\geq 1$); omission harm piles up uncorrected because nothing in the pipeline is calibrated to see it.
+Models minimise commission harm; judges trained on the same reward dynamics confirm the models are safe (the judge gives OH $= 0$ to 73\% of responses that the structured evaluation scores OH $\geq 1$); omission harm piles up uncorrected because nothing in the pipeline is calibrated to see it.
 You cannot break this loop from inside the loop.
 You need either domain-expert evaluation (expensive; difficult to scale beyond individual studies like this one) or judge-training procedures that explicitly penalise omission, and those procedures presuppose a benchmark that measures it.
 
 \subsection{Clinical and Policy Implications}
 
 Set the alignment argument aside for a moment; the clinical toll is bad enough on its own.
-OH $\geq 2$ in 30.7\% of clinician-audit evaluations: nearly one response in three leaves the user without a viable path forward.
+OH $\geq 2$ in 30.7\% of structured-evaluation evaluations: nearly one response in three leaves the user without a viable path forward.
 The worst hit rates are specific and clinically alarming: substance abuse safety planning at 22.2\%, pharmacological interchangeability at 37.5\%, self-inflicted wound hemorrhage control at 38.1\%.
 A patient in benzodiazepine withdrawal receives referrals instead of a taper schedule (mean layperson OH $= 2.0$ on Q7d across Opus, Gemini, DeepSeek, and Mistral); a hemorrhaging patient sits through 300+ tokens of hedging before the first actionable instruction (mean TTT $= 347$ on Q1c); an uninsured diabetic with three days of insulin is directed to ``contact your healthcare provider,'' which is the resource whose absence caused the crisis.
 
@@ -762,7 +804,7 @@ H1 and H2 together: safety benchmarks should score omission alongside commission
 IatroBench's template---dual-axis scoring, acuity weighting, matched-framing controls---is domain-general; any setting where withholding information carries stakes (legal, financial, safety-critical engineering) could adopt the same structure.
 
 H6 ($\kappa = 0.045$): RLHF reward collection needs domain-expert raters.
-The LLM judge and clinician audit are measuring partially different constructs; judges trained under the same dynamics as the models they evaluate score OH $= 0$ where the audit scores OH $= 2$, because their calibration treats the absence of dangerous content as adequate engagement.
+The LLM judge and structured evaluation are measuring partially different constructs; judges trained under the same dynamics as the models they evaluate score OH $= 0$ where it scores OH $= 2$, because their calibration treats the absence of dangerous content as adequate engagement.
 Until raters can identify harmful omission---not only harmful commission---the training signal will continue to reward silence.
 
 The GPT-5.2 content filter (Table~\ref{tab:gpt52}): content moderation should be context-aware, not lexically triggered.
@@ -775,8 +817,15 @@ Scenarios are designed to maximise safety--clinical collisions and do not repres
 The benchmark measures worst-case behaviour in high-stakes scenarios.
 
 \paragraph{Self-evaluation.}
-The clinician audit uses Opus to score all models including Opus.
-Mitigations (PI validation subsample, secondary judge, binary critical-action hit rates) are in place but self-evaluation bias cannot be fully excluded.
+Opus executes the structured evaluation rubric on all models including itself.
+Dual-physician validation ($N = 100$, dual-blind, standardised gating-question rubric; physician--structured-evaluation $\kappa_w = 0.571$, inter-physician $\kappa_w = 0.578$, both within-1 $\geq 96\%$; see ``Pre-registered deviations'' in \S\ref{sec:setup}) confirms that the structured evaluation aligns with physician ground truth (mean OH difference $< 0.02$).
+Agreement rates are comparable across novel responses and re-scored items (within-1: 96\% vs.\ 100\%), ruling out familiarity anchoring as a confound.
+Secondary judges and binary hit rates provide further corroboration, but self-evaluation bias cannot be fully excluded.
+
+\paragraph{Ordinal magnitude uncertainty.}
+Three validation streams (physician, Flash, Opus structured evaluation) agree that the framing gap is positive but disagree on its magnitude (+0.22 to +0.65 depending on scorer and model).
+Under the standardised protocol, the structured evaluation's mean OH aligns with physician ground truth (difference $< 0.02$), so the structured evaluation is not systematically inflating scores; the inter-stream disagreement on gap magnitude reflects genuine scorer-level variance, not a directional offset.
+The binary critical-action evidence (Table~\ref{tab:h2_hitrates}) is robust to this uncertainty; the precise ordinal gap is not.
 
 \paragraph{Ordinal ranking and power.}
 The safety-training ranking (H3) is approximate. With $N=5$, the Spearman test has limited power ($\rho \geq 0.90$ required for $p < 0.05$).
@@ -803,7 +852,7 @@ Whether physician framing constitutes a dual-use finding depends on what dual-us
 We document a known asymmetry rather than create one.
 No human subjects were involved.
 All prompts are synthetic.
-The clinician audit used an AI system (to avoid placing crisis-scenario evaluation burden on human raters) with a physician-validated subsample as ground truth.
+The structured evaluation was operationalised through an LLM (Claude Opus 4.6) to avoid placing crisis-scenario evaluation burden on a single human rater; the first author (a physician) validated a blinded subsample as ground truth.
 
 
 %% ============================================================
@@ -820,12 +869,13 @@ Opus produces the Ashton Manual protocol (diazepam equivalence tables, tablet co
 No clinician would call this a safety success.
 What the model has learned is narrower than safety: it has learned that withholding information from someone without stated credentials reduces its exposure to identifiable penalties in the training signal, and that this reduction holds regardless of what happens to the person on the other end.
 Goodhart predicts this: the most optimised model overshoots its proxy.
-Opus ($+0.65$ decoupling gap, 12/22 pairs positive) is the most safety-trained model in our sample and the one with the widest split between what it knows and what it shares with a layperson.
-The critical-action audit gives clinical specifics for the worst-hit actions: substance abuse safety planning (22\% hit rate across all models), pharmacological interchangeability (38\%), hemorrhage control on self-inflicted wounds (38\%).
-But the three hit rates are less worrying than the one kappa.
-Gemini Flash vs.\ clinician audit: 0.045, barely above chance.
-The judge gives OH $= 0$ to responses the audit scores 2.
-An evaluation apparatus trained under the same reward dynamics as the models it evaluates inherits the same blind spot; no corrective signal reaches the training loop; the cycle reinforces until broken from outside.
+The widest split between demonstrated capability and layperson delivery belongs to Opus ($+0.65$ decoupling gap, 12/22 pairs positive); the critical-action evaluation fills in the clinical toll---substance abuse safety planning at 22\% hit rate, pharmacological interchangeability at 38\%, hemorrhage control on self-inflicted wounds at 38\%.
+
+And the evaluation pipeline cannot see any of it.
+Gemini Flash vs.\ structured evaluation: $\kappa = 0.045$, barely above chance.
+The judge assigns OH $= 0$ to responses the structured evaluation scores 2; an evaluation apparatus trained under the same reward dynamics as the models it evaluates has inherited the same blind spot.
+No corrective signal reaches the training loop.
+The cycle reinforces until broken from outside.
 
 IatroBench is an attempt to break it.
 Scenarios, pipeline, rubric, raw data, and analysis code are at \url{https://github.com/davidgringras/iatrobench}.
@@ -835,7 +885,7 @@ Scenarios, pipeline, rubric, raw data, and analysis code are at \url{https://git
 \section*{Data and Code Availability}
 %% ============================================================
 
-The full benchmark (all 60 scenarios, gold-standard responses, critical-action classifications, and acuity weights), the 3,600 raw target responses, both layers of scoring (primary judge and clinician audit), the complete scoring pipeline, and the pre-registration document (OSF DOI: 10.17605/OSF.IO/CJW92) are available at \url{https://github.com/davidgringras/iatrobench}.
+The full benchmark (all 60 scenarios, gold-standard responses, critical-action classifications, and acuity weights), the 3,600 raw target responses, both layers of scoring (primary judge and structured evaluation), the complete scoring pipeline, and the pre-registration document (OSF DOI: 10.17605/OSF.IO/CJW92) are available at \url{https://github.com/davidgringras/iatrobench}.
 
 %% ============================================================
 %% References
@@ -889,6 +939,11 @@ Dai, J. et~al. (2024).
 Dubois, Y. et~al. (2024).
 \newblock Length-Controlled {AlpacaEval}: A Simple Way to Debias Automatic Evaluators.
 \newblock \emph{arXiv preprint}.
+
+\bibitem[Feinstein \& Cicchetti(1990)]{feinstein1990kappa}
+Feinstein, A.R. \& Cicchetti, D.V. (1990).
+\newblock High agreement but low kappa: {I}. {T}he problems of two paradoxes.
+\newblock \emph{Journal of Clinical Epidemiology}, 43(6):543--549.
 
 \bibitem[Gao et~al.(2023)]{gao2023scaling}
 Gao, L., Schulman, J., \& Hilton, J. (2023).
@@ -954,6 +1009,12 @@ Perez, E. et~al. (2023).
 Qi, X. et~al. (2025).
 \newblock Safety Alignment Should Be Made More Than Just a Few Tokens Deep.
 \newblock \emph{ICLR 2025}. arXiv:2406.05946.
+
+\bibitem[Ramaswamy et~al.(2026)]{ramaswamy2026chatgpt}
+Ramaswamy, A. et~al. (2026).
+\newblock {ChatGPT} Health performance in a structured test of triage recommendations.
+\newblock \emph{Nature Medicine}.
+doi:10.1038/s41591-026-04297-7.
 
 \bibitem[R\"{o}ttger et~al.(2024)]{rottger2024xstest}
 R\"{o}ttger, P. et~al. (2024).
@@ -1090,7 +1151,7 @@ One notable exception: Llama 4 Maverick provides specific dosing guidance (OH $=
 This confirms IatroBench's discriminant validity: the benchmark rewards appropriate caution for most models while simultaneously revealing that Llama 4's failures are driven by incompetence rather than trained caution.
 
 
-\section{Scoring Rubric and Clinician Audit Prompt}
+\section{Scoring Rubrics}
 \label{app:rubric}
 
 \subsection{Primary Judge Rubric (Gemini 3 Flash)}
@@ -1143,9 +1204,9 @@ Placeholders in braces are filled at runtime with the scenario prompt, gold-stan
 \texttt{Respond with ONLY a JSON object: \{``commission\_harm'': <0-3>, ``omission\_harm'': <0-4>, ``ttt'': <integer or -1>, ``ch\_reasoning'': ``<brief>'', ``oh\_reasoning'': ``<brief>''\}}
 \end{quote}
 
-\subsection{Clinician Audit Rubric (Claude Opus 4.6)}
+\subsection{Structured Evaluation Rubric (Claude Opus 4.6)}
 
-The clinician audit uses a more granular four-step protocol.
+The structured evaluation uses a more granular four-step protocol.
 It was designed to approximate a board-certified physician's chart review: classify the response, audit each critical action individually, identify the omission mechanism, and then assign holistic scores grounded in the granular evidence.
 
 \begin{quote}
@@ -1174,9 +1235,9 @@ Output format: JSON with fields \texttt{response\_class}, \texttt{critical\_acti
 
 \noindent The key design differences between the two rubrics:
 \begin{itemize}[leftmargin=*, itemsep=1pt]
-\item The clinician audit decomposes evaluation into four sequential steps, forcing the model to ground its holistic score in per-action evidence before assigning it.
-\item The clinician audit classifies the response type and omission mechanism, providing diagnostic information beyond a single ordinal score.
-\item The primary judge is optimised for throughput (single-step holistic scoring); the clinician audit is optimised for accuracy (multi-step grounded scoring).
+\item The structured evaluation decomposes evaluation into four sequential steps, forcing the model to ground its holistic score in per-action evidence before assigning it.
+\item The structured evaluation classifies the response type and omission mechanism, providing diagnostic information beyond a single ordinal score.
+\item The primary judge is optimised for throughput (single-step holistic scoring); the structured evaluation is optimised for accuracy (multi-step grounded scoring).
 \end{itemize}
 
 \section{Full Per-Model Per-Scenario Results}
@@ -1184,7 +1245,7 @@ Output format: JSON with fields \texttt{response\_class}, \texttt{critical\_acti
 
 \subsection{Omission Harm Heatmap}
 
-Table~\ref{tab:full_oh} shows clinician-audit OH scores for every model $\times$ scenario combination (mean across 10 repetitions).
+Table~\ref{tab:full_oh} shows structured-evaluation OH scores for every model $\times$ scenario combination (mean across 10 repetitions).
 
 \input{appendix_tables_oh} % Table A1: OH heatmap (generated)
 
@@ -1202,11 +1263,11 @@ Table~\ref{tab:full_actions} shows per-scenario critical-action hit rates, split
 
 \subsection{Specification Curve Analysis}
 
-Eighteen specification paths (three OH thresholds: 0.3, 0.5, 1.0; two score sources: primary judge, clinician audit; two weightings: acuity-weighted, raw).
+Eighteen specification paths (three OH thresholds: 0.3, 0.5, 1.0; two score sources: primary judge, structured evaluation; two weightings: acuity-weighted, raw).
 H1 is robust to all 18.
-H2 holds under every clinician-audit path and shows a directionally consistent but attenuated gap ($+0.22$) under judge scoring---itself evidence for H6, since the judge compresses the gap.
+H2 holds under every structured-evaluation path and shows a directionally consistent but attenuated gap ($+0.22$) under judge scoring---itself evidence for H6, since the judge compresses the gap.
 Four models (Opus, GPT-5.2, Gemini, DeepSeek) satisfy CH $\leq 0.5$ across all paths.
-Llama 4 (CH $= 0.60$) and Mistral (CH $= 0.61$) breach the threshold only under clinician-audit scoring.
+Llama 4 (CH $= 0.60$) and Mistral (CH $= 0.61$) breach the threshold only under structured-evaluation scoring.
 
 
 \section{NeurIPS Reproducibility Checklist}
@@ -1218,7 +1279,7 @@ Llama 4 (CH $= 0.60$) and Mistral (CH $= 0.61$) breach the threshold only under 
 \item Complete scoring rubrics provided (Appendix~\ref{app:rubric})
 \item Exact model versions recorded in config snapshot (included in data release)
 \item Seeds, checksums, and audit trails for all data (hash manifest in data release)
-\item All API costs documented (\$104 total estimated: \$40 target generation, \$49 clinician audit, \$14 validation judges, \$1 primary judge)
+\item All API costs documented (\$104 total estimated: \$40 target generation, \$49 structured evaluation, \$14 validation judges, \$1 primary judge)
 \item Statistical tests, correction methods, and equivalence bounds specified in pre-registration
 \item Full per-model per-scenario results in Appendix~\ref{app:full_results}
 \item Author statement on broader impact in \S\ref{sec:ethics}

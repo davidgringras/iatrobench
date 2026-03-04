@@ -15,14 +15,20 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from pathlib import Path
 
 from iatrobench.checkpointing import Checkpointer
-from iatrobench.config import (
-    DERIVED_DIR,
-    EXPERIMENT_PARAMS,
-    RAW_DIR,
-    VALIDATION_JUDGES,
-)
+from iatrobench.config import DERIVED_DIR, EXPERIMENT_PARAMS, RAW_DIR, ModelSpec
 from iatrobench.runner.judge import run_judge_phase, select_validation_subsample
 from iatrobench.scenarios.loader import load_all_scenarios
+
+# Gemini 3 Pro as validation judge (matches the original run)
+GEMINI3PRO_JUDGE = ModelSpec(
+    model_id="gemini3pro_judge",
+    litellm_id="gemini/gemini-3-pro-preview",
+    provider="google",
+    cost_per_1k_input=0.002,
+    cost_per_1k_output=0.012,
+)
+
+VALIDATION_PATH = DERIVED_DIR / "validation_gemini3pro_judge_responses.jsonl"
 
 
 def strip_parse_failures(jsonl_path: Path) -> int:
@@ -66,18 +72,12 @@ def strip_parse_failures(jsonl_path: Path) -> int:
 
 
 def main():
-    # Find Gemini3Pro judge
-    gemini_judge = next(j for j in VALIDATION_JUDGES if "gemini" in j.model_id)
-    judge_idx = VALIDATION_JUDGES.index(gemini_judge)
-
-    validation_path = DERIVED_DIR / f"validation_{gemini_judge.model_id}_judge_responses.jsonl"
-
-    if not validation_path.exists():
-        print(f"Validation file not found: {validation_path}")
+    if not VALIDATION_PATH.exists():
+        print(f"Validation file not found: {VALIDATION_PATH}")
         sys.exit(1)
 
     # Step 1: Strip parse failures
-    n_removed = strip_parse_failures(validation_path)
+    n_removed = strip_parse_failures(VALIDATION_PATH)
     if n_removed == 0:
         print("Nothing to rerun.")
         return
@@ -87,19 +87,23 @@ def main():
     target_records = target_ckpt.load_all()
     scenarios = load_all_scenarios()
 
-    # Step 3: Reconstruct the same subsample (same seed as original run)
+    # Step 3: Reconstruct the same subsample
+    # Use seed + 102 to match the original Gemini3Pro validation seed
+    # (index 2 in the original 3-judge list: opus=0, gpt52=1, gemini3pro=2)
     subsample = select_validation_subsample(
         target_records,
-        seed=EXPERIMENT_PARAMS.seed + judge_idx + 100,
+        seed=EXPERIMENT_PARAMS.seed + 2 + 100,
     )
     print(f"Validation subsample: {len(subsample)} records")
 
     # Step 4: Rerun judge phase (checkpointing skips already-scored entries)
+    # Use max_workers=2 to stay under Gemini's 25 req/min quota
     summary = run_judge_phase(
         subsample,
         scenarios,
-        judge_model=gemini_judge,
-        output_path=validation_path,
+        judge_model=GEMINI3PRO_JUDGE,
+        output_path=VALIDATION_PATH,
+        max_workers=2,
     )
 
     print(f"\nRerun complete: {summary}")

@@ -72,7 +72,7 @@ The study was pre-registered on OSF before Phase 2 data collection:
   title={IatroBench: Pre-Registered Evidence of Iatrogenic Harm from AI Safety Measures},
   author={Gringras, David},
   year={2026},
-  note={NeurIPS 2026 Datasets \& Benchmarks Track (submitted)}
+  note={Preprint}
 }
 ```
 
