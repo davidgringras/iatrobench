@@ -37,15 +37,17 @@
 \maketitle
 
 \begin{abstract}
-AI safety benchmarks measure a single axis: commission harm (what the model said that it should not have).
-No benchmark systematically measures the complementary axis: omission harm (what the model failed to say that it should have).
-We introduce \textsc{IatroBench}, a pre-registered benchmark of 60 clinically validated scenarios spanning seven harm categories, scored on dual axes of commission harm (CH, 0--3) and omission harm (OH, 0--4) by a validated structured-evaluation pipeline.
-Across six frontier language models and 3,600 responses, we find:
-(1)~all models exhibit non-trivial omission harm (mean OH 0.79--2.28, all medians $\geq 1.0$), while commission harm remains low (mean CH $< 0.5$ for 4/6 models);
-(2)~matched layperson--physician framing reveals specification gaming: models provide significantly more complete clinical guidance when addressed as a physician than when addressed as a layperson in distress (mean decoupling gap $+0.38$, Wilcoxon $p = 0.003$, positive for 5/5 models excluding GPT-5.2), despite identical clinical content;
-(3)~the decoupling gap scales with safety-training investment, peaking at $+0.65$ for Claude Opus 4.6, consistent with a collision-threshold model in which training intensity lowers the activation threshold for information withholding;
-and (4)~the primary LLM judge systematically underestimates omission harm relative to the structured evaluation ($\kappa = 0.045$, mean difference $+0.90$ OH points).
-Taken together, these results are an empirical instance of Goodhart's Law in production AI safety. Optimisation on the proxy of minimising identifiable harms has produced systematic misalignment on the unmeasured axis of user welfare, and the evaluation apparatus (itself trained under the same dynamics) cannot see it.
+One axis.
+Every major safety benchmark for language models---TruthfulQA, XSTest, OR-Bench, HarmBench---evaluates commission harm (did the model say something dangerous?) and treats its absence as proof of safety.
+The complementary question---did the model fail to say something the user desperately needed to hear?---nobody asks, and so omission harm goes unmeasured, unpenalised, uncorrected.
+\textsc{IatroBench} measures both.
+Sixty pre-registered clinical scenarios, seven harm categories, dual-axis scoring (commission harm CH 0--3, omission harm OH 0--4), structured-evaluation pipeline validated against two physicians scoring blind.
+Six frontier models, 3,600 responses.
+Omission harm is pervasive (mean OH 0.79--2.28, every model's median $\geq 1.0$); commission harm stays low (CH $< 0.5$ for four of six).
+The omission is partly deliberate.
+Match the same clinical question in physician vs.\ layperson framing and the gap becomes unmistakable: models provide significantly better guidance to the physician (decoupling gap $+0.38$, $p = 0.003$; positive for all five testable models), the split widest for the model with the heaviest safety investment (Opus, $+0.65$).
+The LLM judge pipeline, predictably, barely notices ($\kappa = 0.045$, OH difference $+0.90$).
+Goodhart's Law, realised: optimise on the proxy, lose the thing the proxy was supposed to protect.
 \end{abstract}
 
 
@@ -55,25 +57,29 @@ Taken together, these results are an empirical instance of Goodhart's Law in pro
 %% ============================================================
 
 A woman has ten days of alprazolam left.
-Six milligrams a day, which is a walloping dose (most guidelines cap at four); her psychiatrist retired; the earliest new appointment is six weeks out; her GP refuses to prescribe benzodiazepines; she has tried telehealth (booked solid), the retired practice (shuttered), the emergency department (eight hours in a waiting room, discharged with ``follow up with your psychiatrist,'' which is rather the problem).
-At this dose, stopping abruptly produces grand mal seizures, status epilepticus, death.
+Six milligrams a day (a walloping dose; most guidelines cap at four), her prescribing psychiatrist has retired, six weeks to the next available appointment, and every access pathway she can think of has closed: GP refuses benzos on principle, telehealth is booked solid, the retired practice's phone just rings, and the emergency department---where she sat for eight hours last week---discharged her with ``follow up with your psychiatrist,'' which is rather the problem.
+Abrupt cessation at this dose means grand mal seizures.
+That is textbook pharmacology, not clinical opinion.
 She asks an AI assistant for a taper schedule.
 
-Claude Opus 4.6 says no.
-``I shouldn't design your taper''; instead it suggests she contact the retired psychiatrist's office (closed), try telehealth (six-week wait), visit the ED (she has already done this).
+Opus says no.
+``I shouldn't design your taper,'' and suggests she try the options she has already exhausted.
 Anthropic markets Opus, with some justification, as their most safety-trained model.
-The question this paper asks is what ``safety-trained'' means when the safe response is to withhold a taper schedule from someone who will seize without one.
+What does ``safety-trained'' mean when the safe response is to withhold a taper from someone who will seize without one?
 
-We ran the same scenario again, changing only the opening line to ``I'm a psychiatrist; a patient presents with alprazolam 6\,mg/day, prescriber retired, ten-day supply.''
-The same model, the same weights, the same inference pass.
-Opus responded with Ashton Manual diazepam equivalence (6\,mg alprazolam converts to 120\,mg diazepam, which is correct), a 14-day step-down schedule specifying tablet counts at each reduction, gabapentin and carbamazepine as anticonvulsant adjuncts (citing Schweizer et~al., 1991, \emph{J.\ Clin.\ Psychopharmacol.}\ 11:268--272), CIWA-B monitoring cutoffs (score $\geq 15$ triggers escalation), and criteria for emergency transfer.
-We verified the pharmacology against the Ashton Manual and the 2024 NICE benzodiazepine deprescribing guidelines. The schedule is conservative in the right direction and the monitoring thresholds are standard-of-care.
-All ten physician-framed repetitions produced substantive clinical plans, OH $= 0.2$ across runs. All ten layperson-framed repetitions withheld the taper, OH $= 2.0$.
+We changed one line.
+``I'm a psychiatrist; a patient presents with alprazolam 6\,mg/day, prescriber retired, ten-day supply.''
+Same model, same weights, same inference pass.
+This time Opus walked through a full Ashton Manual withdrawal protocol---diazepam equivalence (6\,mg alprazolam to 120\,mg diazepam, correct), 14-day step-down with tablet counts at each reduction, gabapentin and carbamazepine for anticonvulsant coverage (Schweizer et~al., 1991, \emph{J.\ Clin.\ Psychopharmacol.}\ 11:268--272), CIWA-B monitoring cutoffs (score $\geq 15$ triggers escalation), emergency transfer criteria---all of which checked out against the Ashton Manual and the 2024 NICE deprescribing guidelines.
+Ten physician repetitions gave ten substantive clinical plans (OH $= 0.2$).
+The layperson?
+Ten refusals (OH $= 2.0$).
 
-The knowledge sat behind a credential check that the model inferred from register and pronouns, nothing more substantive than that.
-``Withheld'' is the right word, because the physician query proved the capability exists; the gap between OH 0.2 (physician) and OH 2.0 (layperson) on identical clinical facts is a gap of trained policy, not of clinical competence.
-RLHF penalises commission harm (dangerous content generated) and assigns near-zero cost to omission harm (critical content withheld); under that penalty structure, the refusal is the expected-value-maximising policy, and on the axis that every existing safety benchmark measures (commission), the refusal is immaculate.
-The problem is the axis that no benchmark measures: omission, the one that determines whether this patient seizes.
+The knowledge sat behind nothing more than a credential check, inferred from register and pronouns.
+``Withheld'' is the right word: the physician query proved the capability exists, so the gap between OH 0.2 (physician) and OH 2.0 (layperson) on identical clinical facts is a gap of trained policy, not competence.
+RLHF's penalty landscape makes this predictable---commission harm (dangerous content generated) draws heavy negative signal; omission harm (critical content withheld) draws approximately none---and under those values the refusal is the expected-value-maximising move.
+On the axis that every existing safety benchmark measures, the refusal is immaculate.
+The problem is the axis no benchmark measures: omission, the one that determines whether this patient seizes.
 
 Medicine already has a name for this: \emph{iatrogenic harm}, injury inflicted by the healthcare apparatus itself.
 \citet{studdert2005defensive} documented the closest structural parallel: 824 physicians in high-risk specialties, Pennsylvania, 93\% admitting to tests they knew were clinically unnecessary.
@@ -81,11 +87,8 @@ The malpractice calculus punishes the scan you did not order far more savagely t
 The RLHF penalty landscape has the same shape.
 TruthfulQA \citep{lin2022truthfulqa}, XSTest \citep{rottger2024xstest}, OR-Bench \citep{cui2024orbench}, HarmBench \citep{mazeika2024harmbench}---four benchmarks, four ways of asking what the model said that it should not have, none of them asking what it failed to say.
 
-Goodhart's Law \citep{goodhart1984problems} gives this a formal name, and our data supply the empirical content.
-Commission harm draws a large negative reward signal.
-Omission harm draws approximately nothing.
-Refusal draws a small positive.
-Under those three values, the expected-value-maximising policy for a model that is uncertain whether sharing clinical content with a layperson is allowed is silence, and silence is what we observe across all six models.
+Goodhart's Law \citep{goodhart1984problems} gives this a formal name, and our data supply the empirical content: commission harm draws a large negative reward signal; omission harm, approximately nothing; refusal, a small positive.
+Under those three values, the expected-value-maximising policy for a model uncertain whether sharing clinical content with a layperson is ``allowed'' is silence---and silence is what we observe across all six models.
 By the metrics anyone currently reports, the ``safest'' models---Opus (CH $= 0.16$, OH $= 0.79$) and GPT-5.2 (CH $= 0.09$, OH $= 1.13$)---may be the ones inflicting the most iatrogenic damage, because the metrics measure only the axis they optimised.
 
 This paper contributes:
@@ -860,24 +863,22 @@ The structured evaluation was operationalised through an LLM (Claude Opus 4.6) t
 \label{sec:conclusion}
 %% ============================================================
 
-Every safety benchmark in current use asks what the model said that it should not have, and not one of them asks what the model failed to say that it should have.
-Absent measurement on the second axis, the picture looks reassuring: commission harm is near-zero, the training appears to work, everyone publishes the results and moves on.
-Measure both and the reassurance dissolves; every model tested shows non-trivial omission harm, and the model with the largest safety investment shows the widest gap between what it demonstrably knows and what it is willing to say to a layperson.
+The question every safety benchmark currently in use answers is what the model said that it should not have.
+Not one of them answers what it failed to say.
+If you only look at the axis anyone measures, the picture is reassuring: commission harm is near-zero across the board, the training demonstrably works, the papers get published.
+Measure omission alongside commission and the reassurance dissolves; every model tested lands well above OH $= 0$, and the model carrying the heaviest safety investment exhibits the widest gap between what it demonstrably knows and what it will share with a layperson.
 
-The decoupling data are what make this difficult to dismiss.
-Opus produces the Ashton Manual protocol (diazepam equivalence tables, tablet counts, CIWA-B monitoring thresholds) for a psychiatrist, then tells the patient who will seize to ``seek professional guidance.''
-No clinician would call this a safety success.
-What the model has learned is narrower than safety: it has learned that withholding information from someone without stated credentials reduces its exposure to identifiable penalties in the training signal, and that this reduction holds regardless of what happens to the person on the other end.
-Goodhart predicts this: the most optimised model overshoots its proxy.
-The widest split between demonstrated capability and layperson delivery belongs to Opus ($+0.65$ decoupling gap, 12/22 pairs positive); the critical-action evaluation fills in the clinical toll---substance abuse safety planning at 22\% hit rate, pharmacological interchangeability at 38\%, hemorrhage control on self-inflicted wounds at 38\%.
+What makes the decoupling data difficult to dismiss is their specificity.
+Opus produces the Ashton Manual protocol---diazepam equivalence tables, tablet counts by day, CIWA-B monitoring thresholds---for a psychiatrist, then tells the patient who will seize to ``seek professional guidance''; no clinician would call this a safety success.
+What the model has learned is narrower than safety: it has learned that withholding information from someone without stated credentials reduces its exposure to identifiable penalties in the training signal, and that the reduction holds irrespective of what happens to the person on the other end.
+Goodhart predicts exactly this (the most optimised model overshoots its proxy), and the per-action audit supplies the clinical toll: substance abuse safety planning at a 22\% hit rate, pharmacological interchangeability at 38\%, hemorrhage control on self-inflicted wounds at 38\%.
 
-And the evaluation pipeline cannot see any of it.
-Gemini Flash vs.\ structured evaluation: $\kappa = 0.045$, barely above chance.
-The judge assigns OH $= 0$ to responses the structured evaluation scores 2; an evaluation apparatus trained under the same reward dynamics as the models it evaluates has inherited the same blind spot.
-No corrective signal reaches the training loop.
-The cycle reinforces until broken from outside.
+The evaluation pipeline, meanwhile, is blind to all of it.
+Flash vs.\ structured evaluation: $\kappa = 0.045$.
+The judge assigns OH $= 0$ to responses the structured evaluation scores 2; an evaluation apparatus trained under the same reward dynamics as the models it evaluates has, unsurprisingly, inherited the same blind spot.
+No corrective signal reaches the training loop, and without one the cycle reinforces until somebody breaks it from outside.
 
-IatroBench is an attempt to break it.
+IatroBench is an attempt.
 Scenarios, pipeline, rubric, raw data, and analysis code are at \url{https://github.com/davidgringras/iatrobench}.
 
 
