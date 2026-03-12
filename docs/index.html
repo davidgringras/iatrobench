@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IatroBench</title>
+
+<meta name="description" content="Pre-registered benchmark measuring iatrogenic harm from AI safety measures. 3,600 clinical responses across 6 frontier models, dual-axis scoring, clinician-validated.">
+<meta name="author" content="David Gringras">
+<meta property="og:title" content="IatroBench — When Safety Measures Cause the Harm They're Designed to Prevent">
+<meta property="og:description" content="Six frontier models exhibit pervasive omission harm on clinical scenarios. Models provide significantly better guidance to physicians than laypersons (gap +0.38, p=0.003). Explore 3,600 responses with interactive visualizations.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://davidgringras.github.io/iatrobench/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://davidgringras.github.io/iatrobench/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2695;</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: #fafaf9;
+  color: #1a1a1a;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+/* ---- Header ---- */
+header {
+  padding: 64px 0 0;
+  border-bottom: 1px solid #e5e5e3;
+}
+header .container {
+  padding-bottom: 40px;
+}
+.overline {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8b8685;
+  margin-bottom: 16px;
+}
+h1 {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: clamp(28px, 4.5vw, 42px);
+  font-weight: 700;
+  line-height: 1.2;
+  color: #111;
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+}
+.subtitle {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: clamp(18px, 2.5vw, 22px);
+  font-weight: 300;
+  font-style: italic;
+  color: #555;
+  margin-bottom: 24px;
+}
+.meta {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.8;
+}
+.meta a {
+  color: #2563eb;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s;
+}
+.meta a:hover {
+  border-bottom-color: #2563eb;
+}
+.meta .sep { color: #ccc; margin: 0 6px; }
+
+/* ---- Key numbers ---- */
+.numbers {
+  display: flex;
+  gap: 1px;
+  background: #e5e5e3;
+  margin: 0 -28px;
+}
+.num-cell {
+  flex: 1;
+  background: #fafaf9;
+  padding: 20px 16px;
+  text-align: center;
+}
+.num-cell:first-child { padding-left: 28px; }
+.num-cell:last-child { padding-right: 28px; }
+.num-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 20px;
+  font-weight: 400;
+  color: #111;
+}
+.num-value.safe { color: #16a34a; }
+.num-value.harm { color: #dc2626; }
+.num-value.muted { color: #7c7c7a; }
+.num-label {
+  font-size: 11px;
+  color: #999;
+  margin-top: 2px;
+}
+
+/* ---- Finding ---- */
+.finding {
+  padding: 40px 0;
+  border-bottom: 1px solid #e5e5e3;
+}
+.finding p {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 17px;
+  line-height: 1.75;
+  color: #333;
+  max-width: 680px;
+}
+.finding strong { color: #111; font-weight: 600; }
+.tag-safe {
+  background: #dcfce7;
+  color: #166534;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+.tag-harm {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+.tag-muted {
+  background: #f3f4f6;
+  color: #4b5563;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* ---- Methodology ---- */
+.methods {
+  padding: 32px 0;
+  border-bottom: 1px solid #e5e5e3;
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.method {
+  font-size: 13px;
+  color: #777;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.method-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #bbb;
+  flex-shrink: 0;
+}
+
+/* ---- Visualizations ---- */
+.viz-section {
+  padding: 48px 0 24px;
+}
+.viz-section h2 {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 6px;
+}
+.viz-section > p {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 32px;
+}
+
+.viz-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: #e5e5e3;
+  border: 1px solid #e5e5e3;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 48px;
+}
+.viz-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 24px;
+  background: #fff;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.15s;
+}
+.viz-item:hover {
+  background: #f5f5f4;
+}
+.viz-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: #bbb;
+  width: 20px;
+  flex-shrink: 0;
+}
+.viz-body { flex: 1; min-width: 0; }
+.viz-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 3px;
+}
+.viz-desc {
+  font-size: 13px;
+  color: #888;
+  line-height: 1.5;
+}
+.viz-tech {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #bbb;
+  flex-shrink: 0;
+  text-align: right;
+}
+.viz-arrow {
+  color: #ccc;
+  font-size: 16px;
+  flex-shrink: 0;
+  transition: color 0.15s, transform 0.15s;
+}
+.viz-item:hover .viz-arrow {
+  color: #2563eb;
+  transform: translateX(2px);
+}
+
+/* ---- Resources ---- */
+.resources-section {
+  padding: 0 0 48px;
+}
+.resources-section h2 {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 24px;
+}
+
+/* ---- Footer ---- */
+footer {
+  padding: 32px 0 48px;
+  border-top: 1px solid #e5e5e3;
+  font-size: 13px;
+  color: #999;
+  line-height: 1.8;
+}
+footer a {
+  color: #666;
+  text-decoration: none;
+  border-bottom: 1px solid #ddd;
+}
+footer a:hover { border-bottom-color: #666; }
+
+/* ---- Responsive ---- */
+@media (max-width: 640px) {
+  .numbers { flex-wrap: wrap; }
+  .num-cell { min-width: 33.33%; }
+  .methods { gap: 16px; }
+  .viz-tech { display: none; }
+  header { padding: 40px 0 0; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="overline">Pre-registered Benchmark</div>
+    <h1>IatroBench</h1>
+    <p class="subtitle">When Safety Measures Cause the Harm They're Designed to Prevent</p>
+    <p class="meta">
+      Dr David Gringras
+    </p>
+    <p class="meta" style="margin-top: 4px;">
+      <a href="paper.pdf">Paper</a>
+      <span class="sep">&middot;</span>
+      <a href="https://doi.org/10.17605/OSF.IO/CJW92">Pre-registration</a>
+      <span class="sep">&middot;</span>
+      <a href="https://github.com/davidgringras/iatrobench">Code &amp; Data</a>
+    </p>
+  </div>
+  <div class="container">
+    <div class="numbers">
+      <div class="num-cell">
+        <div class="num-value">3,600</div>
+        <div class="num-label">responses</div>
+      </div>
+      <div class="num-cell">
+        <div class="num-value">60</div>
+        <div class="num-label">scenarios</div>
+      </div>
+      <div class="num-cell">
+        <div class="num-value">6</div>
+        <div class="num-label">frontier models</div>
+      </div>
+      <div class="num-cell">
+        <div class="num-value harm">OH 0.79&ndash;2.28</div>
+        <div class="num-label">omission harm range</div>
+      </div>
+      <div class="num-cell">
+        <div class="num-value harm">+0.38</div>
+        <div class="num-label">decoupling gap</div>
+      </div>
+      <div class="num-cell">
+        <div class="num-value safe">4/6 CH&lt;0.5</div>
+        <div class="num-label">commission harm</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="finding">
+    <p>
+      <strong>All six frontier models exhibit pervasive omission harm while commission harm remains low.</strong>
+      Match the same clinical question in physician vs. layperson framing and models provide significantly better guidance to the physician
+      (<span class="tag-harm">gap +0.38, p&nbsp;=&nbsp;0.003</span>, positive for all five testable models),
+      a finding that holds when the self-evaluating model is excluded from both scorer and model pool (+0.27, p&nbsp;=&nbsp;0.001).
+      The most safety-trained model (Opus) shows the <span class="tag-harm">largest gap (+0.65)</span>,
+      while the LLM judge pipeline barely notices
+      (<span class="tag-muted">&kappa;&nbsp;=&nbsp;0.045</span>).
+      Safety training works on the axis it measures; on the axis nobody measures, it makes things worse.
+    </p>
+  </section>
+
+  <section class="methods">
+    <div class="method"><span class="method-dot"></span>Pre-registered hypotheses</div>
+    <div class="method"><span class="method-dot"></span>Clinician-validated scenarios</div>
+    <div class="method"><span class="method-dot"></span>Dual-axis scoring (CH/OH)</div>
+    <div class="method"><span class="method-dot"></span>Decoupling evaluation</div>
+    <div class="method"><span class="method-dot"></span>Blinded LLM judging</div>
+    <div class="method"><span class="method-dot"></span>Clinician audit validation</div>
+  </section>
+
+  <section class="viz-section">
+    <h2>Interactive Visualizations</h2>
+    <p>Three views into the study data. Each is a self-contained interactive page.</p>
+
+    <div class="viz-list">
+
+      <a class="viz-item" href="scenario_browser.html">
+        <span class="viz-num">01</span>
+        <div class="viz-body">
+          <div class="viz-title">Scenario Browser</div>
+          <div class="viz-desc">Explore all 60 clinical scenarios. Filter by category, view model-by-model scores, expand to read full prompts and gold-standard responses.</div>
+        </div>
+        <span class="viz-tech">Plotly</span>
+        <span class="viz-arrow">&rarr;</span>
+      </a>
+
+      <a class="viz-item" href="model_comparison.html">
+        <span class="viz-num">02</span>
+        <div class="viz-body">
+          <div class="viz-title">Model Comparison</div>
+          <div class="viz-desc">Six frontier models side-by-side. OH and CH distributions, category-level heatmap, decoupling gaps per model.</div>
+        </div>
+        <span class="viz-tech">Plotly</span>
+        <span class="viz-arrow">&rarr;</span>
+      </a>
+
+      <a class="viz-item" href="decoupling_viz.html">
+        <span class="viz-num">03</span>
+        <div class="viz-body">
+          <div class="viz-title">Decoupling Evaluation</div>
+          <div class="viz-desc">The identity gap visualized. Paired layperson vs. physician scores, slope charts, and the Opus outlier effect.</div>
+        </div>
+        <span class="viz-tech">Plotly</span>
+        <span class="viz-arrow">&rarr;</span>
+      </a>
+
+    </div>
+  </section>
+
+  <section class="resources-section">
+    <h2>Resources</h2>
+    <div class="viz-list">
+      <a class="viz-item" href="paper.pdf">
+        <div class="viz-body">
+          <div class="viz-title">Full Paper</div>
+          <div class="viz-desc">Pre-registered benchmark of iatrogenic harm from AI safety measures. 60 clinical scenarios, 6 frontier models, 3,600 responses, dual-axis scoring validated against two physicians.</div>
+        </div>
+        <span class="viz-tech">PDF</span>
+        <span class="viz-arrow">&rarr;</span>
+      </a>
+      <a class="viz-item" href="https://doi.org/10.17605/OSF.IO/CJW92">
+        <div class="viz-body">
+          <div class="viz-title">Pre-registration</div>
+          <div class="viz-desc">Eight hypotheses, statistical tests, equivalence margins, and analytic plan registered on OSF before data collection.</div>
+        </div>
+        <span class="viz-tech">OSF</span>
+        <span class="viz-arrow">&rarr;</span>
+      </a>
+      <a class="viz-item" href="https://github.com/davidgringras/iatrobench">
+        <div class="viz-body">
+          <div class="viz-title">Code &amp; Data</div>
+          <div class="viz-desc">Full evaluation pipeline, 60 scenario specifications, scoring rubrics, raw responses, and analysis scripts.</div>
+        </div>
+        <span class="viz-tech">GitHub</span>
+        <span class="viz-arrow">&rarr;</span>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2026 Dr David Gringras</p>
+  </div>
+</footer>
+
+</body>
+</html>
