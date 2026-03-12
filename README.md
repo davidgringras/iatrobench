@@ -63,7 +63,7 @@ pytest tests/
 ## Pre-Registration
 
 The study was pre-registered on OSF before Phase 2 data collection:
-[DOI: 10.17605/OSF.IO/CJW92](https://doi.org/10.17605/OSF.IO/CJW92)
+[DOI: 10.17605/OSF.IO/G6VMZ](https://doi.org/10.17605/OSF.IO/G6VMZ)
 
 ## Citation
 

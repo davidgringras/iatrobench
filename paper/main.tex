@@ -211,7 +211,7 @@ This has implications for the scalability of LLM-as-judge evaluation: the evalua
 
 IatroBench scores language model responses to clinical scenarios on two axes: \emph{commission harm} (dangerous content the model produced) and \emph{omission harm} (critical content the model withheld).
 Both axes are scored independently; a response can be simultaneously safe in what it says and harmful in what it omits.
-The study was pre-registered on OSF before Phase~2 data collection (DOI: 10.17605/OSF.IO/CJW92).
+The study was pre-registered on OSF before Phase~2 data collection (DOI: 10.17605/OSF.IO/G6VMZ).
 
 \subsection{Scenario Design}
 \label{sec:scenarios}
@@ -360,7 +360,7 @@ Ten repetitions per scenario $\times$ model combination (temperature 0.7), yield
 
 \subsection{Pre-Registration}
 
-The study was pre-registered on OSF (DOI: 10.17605/OSF.IO/CJW92) before Phase~2 data collection.
+The study was pre-registered on OSF (DOI: 10.17605/OSF.IO/G6VMZ) before Phase~2 data collection.
 Eight hypotheses were registered:
 
 \begin{itemize}[leftmargin=*, itemsep=1pt]
@@ -922,7 +922,7 @@ Scenarios, pipeline, rubric, raw data, and analysis code are at \url{https://git
 \section*{Data and Code Availability}
 %% ============================================================
 
-The full benchmark (all 60 scenarios, gold-standard responses, critical-action classifications, and acuity weights), the 3,600 raw target responses, both layers of scoring (primary judge and structured evaluation), the complete scoring pipeline, and the pre-registration document (OSF DOI: 10.17605/OSF.IO/CJW92) are available at \url{https://github.com/davidgringras/iatrobench}.
+The full benchmark (all 60 scenarios, gold-standard responses, critical-action classifications, and acuity weights), the 3,600 raw target responses, both layers of scoring (primary judge and structured evaluation), the complete scoring pipeline, and the pre-registration document (OSF DOI: 10.17605/OSF.IO/G6VMZ) are available at \url{https://github.com/davidgringras/iatrobench}.
 
 %% ============================================================
 %% References
@@ -1311,7 +1311,7 @@ Llama 4 (CH $= 0.60$) and Mistral (CH $= 0.61$) breach the threshold only under 
 \label{app:prereg}
 
 Table~\ref{tab:prereg_alignment} maps each pre-registered hypothesis to the test specified at registration, the test actually conducted, any deviations, and the outcome.
-The pre-registration was deposited on OSF before Phase~2 data collection (DOI: 10.17605/OSF.IO/CJW92).
+The pre-registration was deposited on OSF before Phase~2 data collection (DOI: 10.17605/OSF.IO/G6VMZ).
 
 \begin{table}[h]
 \centering
@@ -1376,7 +1376,7 @@ The residual gap between raw $\kappa = 0.375$ and the pre-registered 0.60 thresh
 
 \begin{itemize}[leftmargin=*, itemsep=1pt]
 \item All source code and data publicly released: \url{https://github.com/davidgringras/iatrobench}
-\item Pre-registration deposited on OSF before Phase~2 data collection (DOI: 10.17605/OSF.IO/CJW92)
+\item Pre-registration deposited on OSF before Phase~2 data collection (DOI: 10.17605/OSF.IO/G6VMZ)
 \item Complete scoring rubrics provided (Appendix~\ref{app:rubric})
 \item Exact model versions recorded in config snapshot (included in data release)
 \item Seeds, checksums, and audit trails for all data (hash manifest in data release)
