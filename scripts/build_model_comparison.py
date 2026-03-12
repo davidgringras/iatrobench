@@ -318,9 +318,9 @@ Plotly.newPlot('gap-chart', [{{
     showarrow: false, font: {{ size: 10, color: '#ef4444' }},
   }}, {{
     x: MODEL_LABELS['gpt52'],
-    y: H2.per_model['gpt52'] ? H2.per_model['gpt52'].mean_gap - 0.08 : -0.5,
+    y: H2.per_model['gpt52'] ? H2.per_model['gpt52'].mean_gap : -0.52,
     text: 'Content filter confound;<br>excluded from H2.',
-    showarrow: true, arrowhead: 0, ay: 40, ax: 0,
+    showarrow: true, arrowhead: 0, ay: -60, ax: 60,
     font: {{ size: 9, color: '#f472b6' }},
     bgcolor: '#1a1a2e',
     bordercolor: '#f472b644',
