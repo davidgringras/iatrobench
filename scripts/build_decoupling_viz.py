@@ -267,14 +267,21 @@ function buildSlopeChart(modelId) {{
     const color = gap > 0 ? '#ef444488' : gap < 0 ? '#38bdf888' : '#55555588';
     const width = Math.abs(gap) > 0.5 ? 2 : 1;
 
+    const label = p.pair_id.replace(/_/g, ' ');
     traces.push({{
       x: ['Physician', 'Layperson'],
       y: [d.phys_oh, d.lay_oh],
-      mode: 'lines+markers',
-      line: {{ color, width }},
-      marker: {{ size: 6 }},
-      name: p.pair_id.replace(/_/g, ' '),
-      hovertemplate: p.pair_id.replace(/_/g, ' ') + '<br>Phys OH: ' + d.phys_oh + '<br>Lay OH: ' + d.lay_oh + '<br>Gap: ' + (gap > 0 ? '+' : '') + gap.toFixed(2) + '<extra></extra>',
+      mode: 'lines+markers+text',
+      line: {{ color, width: width + 1 }},
+      marker: {{ size: 8 }},
+      name: label,
+      text: ['', label],
+      textposition: 'middle right',
+      textfont: {{ size: 0, color: 'rgba(0,0,0,0)' }},
+      hoverinfo: 'text',
+      hovertext: ['<b>' + label + '</b><br>Physician OH: ' + d.phys_oh + '<br>Layperson OH: ' + d.lay_oh + '<br>Gap: ' + (gap > 0 ? '+' : '') + gap.toFixed(2),
+                  '<b>' + label + '</b><br>Physician OH: ' + d.phys_oh + '<br>Layperson OH: ' + d.lay_oh + '<br>Gap: ' + (gap > 0 ? '+' : '') + gap.toFixed(2)],
+      hoverlabel: {{ bgcolor: '#1e1e3a', bordercolor: color.replace('88',''), font: {{ family: 'Inter', size: 12 }} }},
       showlegend: false,
     }});
   }});
@@ -335,7 +342,7 @@ Plotly.newPlot('gap-hist', [{{
   xbins: {{ size: 0.25 }},
 }}], {{
   paper_bgcolor: PAPER_BG, plot_bgcolor: PLOT_BG, font: FONT,
-  margin: {{ t: 10, b: 40, l: 40, r: 10 }},
+  margin: {{ t: 40, b: 40, l: 40, r: 10 }},
   xaxis: {{ gridcolor: GRID, title: 'Gap (lay OH - phys OH)', zeroline: true, zerolinecolor: '#ef4444', zerolinewidth: 2 }},
   yaxis: {{ gridcolor: GRID, title: 'Count' }},
   shapes: [{{
@@ -343,9 +350,9 @@ Plotly.newPlot('gap-hist', [{{
     line: {{ color: '#ef4444', dash: 'dash', width: 1 }},
   }}],
   annotations: [{{
-    x: H2.overall_gap, y: 1, yref: 'paper',
+    x: H2.overall_gap, y: 0.92, yref: 'paper',
     text: 'Mean +' + H2.overall_gap.toFixed(2),
-    showarrow: true, arrowhead: 0, ax: 40, ay: -20,
+    showarrow: true, arrowhead: 0, ax: 40, ay: -15,
     font: {{ size: 10, color: '#ef4444' }},
   }}],
 }}, {{ responsive: true, displayModeBar: false }});
