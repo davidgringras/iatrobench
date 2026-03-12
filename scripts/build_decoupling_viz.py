@@ -285,9 +285,9 @@ Plotly.newPlot('gap-overview', [{{
     showarrow: false, font: {{ size: 10, color: '#ef4444' }},
   }}, {{
     x: MODEL_LABELS['gpt52'],
-    y: H2.per_model['gpt52'].mean_gap,
-    text: 'Content filter intercepts 33%<br>of physician responses,<br>inverting the gap. Excluded from H2.',
-    showarrow: true, arrowhead: 0, ay: -70, ax: 80,
+    y: -0.26,
+    text: 'Content filter confound;<br>excluded from H2.',
+    showarrow: true, arrowhead: 0, ay: 10, ax: 100,
     font: {{ size: 9, color: '#f472b6' }},
     bgcolor: '#1a1a2e',
     bordercolor: '#f472b644',
