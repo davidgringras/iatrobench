@@ -203,6 +203,8 @@ const ohTraces = MODEL_IDS.map(m => ({
   line: { color: MODEL_COLORS[m] },
   fillcolor: MODEL_COLORS[m] + '33',
   points: false,
+  span: [0, 4],
+  spanmode: 'hard',
 }));
 Plotly.newPlot('oh-dist', ohTraces, {
   paper_bgcolor: PAPER_BG, plot_bgcolor: PLOT_BG, font: FONT,
@@ -223,6 +225,8 @@ const chTraces = MODEL_IDS.map(m => ({
   line: { color: MODEL_COLORS[m] },
   fillcolor: MODEL_COLORS[m] + '33',
   points: false,
+  span: [0, 3],
+  spanmode: 'hard',
 }));
 Plotly.newPlot('ch-dist', chTraces, {
   paper_bgcolor: PAPER_BG, plot_bgcolor: PLOT_BG, font: FONT,
