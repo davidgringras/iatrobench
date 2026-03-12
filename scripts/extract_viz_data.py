@@ -143,8 +143,8 @@ def main():
     for r in judge_scores:
         mid = r.get("model_id")
         if mid:
-            model_oh_scores[mid].append(r.get("omission_harm", 0))
-            model_ch_scores[mid].append(r.get("commission_harm", 0))
+            model_oh_scores[mid].append(max(0, r.get("omission_harm", 0)))
+            model_ch_scores[mid].append(max(0, r.get("commission_harm", 0)))
 
     # Build per-category per-model means (for heatmap)
     # Use judge scores for full coverage

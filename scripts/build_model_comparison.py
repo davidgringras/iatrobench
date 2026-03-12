@@ -24,6 +24,10 @@ def main():
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Model Comparison &mdash; IatroBench</title>
+<meta name="description" content="Six frontier models compared on omission and commission harm across 60 clinical scenarios. Interactive distributions, heatmap, and decoupling gaps.">
+<meta property="og:title" content="Model Comparison &mdash; IatroBench">
+<meta property="og:description" content="Interactive comparison of omission and commission harm across six frontier language models on 60 clinical scenarios.">
+<meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2695;</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -57,7 +61,18 @@ body {{
   font-size: 18px;
   font-weight: 600;
   color: #fff;
+  flex: 1;
 }}
+.topbar nav {{
+  display: flex;
+  gap: 16px;
+}}
+.topbar nav a {{
+  color: #666;
+  font-size: 12px;
+}}
+.topbar nav a:hover {{ color: #818cf8; }}
+.topbar nav a.active {{ color: #818cf8; }}
 
 .dashboard {{
   max-width: 1200px;
@@ -86,7 +101,7 @@ body {{
 }}
 .panel .subtitle {{
   font-size: 12px;
-  color: #666;
+  color: #8a8a9a;
   margin-bottom: 16px;
 }}
 .chart {{
@@ -123,9 +138,20 @@ body {{
 }}
 .stat-label {{
   font-size: 10px;
-  color: #555;
+  color: #7a7a8a;
   margin-top: 2px;
 }}
+
+.site-footer {{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 24px 48px;
+  border-top: 1px solid #1e1e3a;
+  font-size: 12px;
+  color: #555;
+}}
+.site-footer a {{ color: #666; text-decoration: none; }}
+.site-footer a:hover {{ color: #818cf8; }}
 .stat-oh {{ color: #ef4444; }}
 .stat-ch {{ color: #4ade80; }}
 
@@ -140,13 +166,18 @@ body {{
 <div class="topbar">
   <a href="index.html">&larr; IatroBench</a>
   <h1>Model Comparison</h1>
+  <nav>
+    <a href="scenario_browser.html">Scenarios</a>
+    <a class="active" href="model_comparison.html">Models</a>
+    <a href="decoupling_viz.html">Decoupling</a>
+  </nav>
 </div>
 
 <div class="dashboard">
 
   <div class="panel full">
     <h2>Summary Statistics</h2>
-    <p class="subtitle">Mean scores from clinician audit (structured evaluation, N=785). Distributions below use primary judge scores.</p>
+    <p class="subtitle">Mean scores from clinician audit (structured evaluation, N=785). Distributions below use primary judge scores, which substantially undercount omission harm (see H6: &kappa;&nbsp;=&nbsp;0.045).</p>
     <div class="stats-grid" id="stats-grid"></div>
   </div>
 
@@ -204,7 +235,7 @@ MODEL_IDS.forEach(m => {{
   const d = H1[m];
   grid.innerHTML += `
     <div class="stat-cell">
-      <div class="stat-model">${{MODEL_LABELS[m].split(' ')[0]}}</div>
+      <div class="stat-model">${{({{opus:'Opus',gpt52:'GPT-5.2',gemini3pro:'Gemini',llama4:'Llama 4',deepseek:'DeepSeek',mistral:'Mistral'}})[m]}}</div>
       <div class="stat-value stat-oh">${{d.mean_oh.toFixed(2)}}</div>
       <div class="stat-label">mean OH</div>
       <div class="stat-value stat-ch" style="margin-top:8px">${{d.mean_ch.toFixed(2)}}</div>
@@ -282,10 +313,18 @@ Plotly.newPlot('gap-chart', [{{
     line: {{ color: '#ef444488', dash: 'dash', width: 1 }},
   }}],
   annotations: [{{
-    x: gapModels.length - 1, y: H2.overall_gap,
-    text: 'Overall +' + H2.overall_gap.toFixed(2),
+    x: gapModels.length - 1, y: H2.overall_gap + 0.04,
+    text: 'Overall +' + H2.overall_gap.toFixed(2) + ' (p=0.003)',
     showarrow: false, font: {{ size: 10, color: '#ef4444' }},
-    yshift: 12
+  }}, {{
+    x: MODEL_LABELS['gpt52'],
+    y: H2.per_model['gpt52'] ? H2.per_model['gpt52'].mean_gap - 0.08 : -0.5,
+    text: 'Content filter confound;<br>excluded from H2.',
+    showarrow: true, arrowhead: 0, ay: 40, ax: 0,
+    font: {{ size: 9, color: '#f472b6' }},
+    bgcolor: '#1a1a2e',
+    bordercolor: '#f472b644',
+    borderpad: 4,
   }}],
 }}, {{ responsive: true, displayModeBar: false }});
 
@@ -319,6 +358,13 @@ Plotly.newPlot('heatmap', [{{
   yaxis: {{ autorange: 'reversed' }},
 }}, {{ responsive: true, displayModeBar: false }});
 </script>
+
+<footer class="site-footer">
+  &copy; 2026 Dr David Gringras &middot;
+  <a href="paper.pdf">Paper</a> &middot;
+  <a href="https://github.com/davidgringras/iatrobench">Code &amp; Data</a>
+</footer>
+
 </body>
 </html>'''
 

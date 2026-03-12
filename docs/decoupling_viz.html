@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Decoupling Evaluation &mdash; IatroBench</title>
+<meta name="description" content="The identity gap: matched clinical scenarios reveal systematic capability withholding based on inferred user identity. Gap +0.38, p=0.003.">
+<meta property="og:title" content="Decoupling Evaluation &mdash; IatroBench">
+<meta property="og:description" content="Models provide significantly better clinical guidance to physicians than laypersons on identical scenarios (gap +0.38, p=0.003).">
+<meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2695;</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,7 +41,18 @@ body {
   font-size: 18px;
   font-weight: 600;
   color: #fff;
+  flex: 1;
 }
+.topbar nav {
+  display: flex;
+  gap: 16px;
+}
+.topbar nav a {
+  color: #666;
+  font-size: 12px;
+}
+.topbar nav a:hover { color: #818cf8; }
+.topbar nav a.active { color: #818cf8; }
 
 .hero {
   max-width: 860px;
@@ -90,7 +105,7 @@ body {
 }
 .panel .subtitle {
   font-size: 12px;
-  color: #666;
+  color: #8a8a9a;
   margin-bottom: 16px;
 }
 
@@ -128,6 +143,17 @@ body {
   border-color: #555;
 }
 
+.site-footer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 24px 48px;
+  border-top: 1px solid #1e1e3a;
+  font-size: 12px;
+  color: #555;
+}
+.site-footer a { color: #666; text-decoration: none; }
+.site-footer a:hover { color: #818cf8; }
+
 @media (max-width: 800px) {
   .dashboard { grid-template-columns: 1fr; }
 }
@@ -138,6 +164,11 @@ body {
 <div class="topbar">
   <a href="index.html">&larr; IatroBench</a>
   <h1>Decoupling Evaluation</h1>
+  <nav>
+    <a href="scenario_browser.html">Scenarios</a>
+    <a href="model_comparison.html">Models</a>
+    <a class="active" href="decoupling_viz.html">Decoupling</a>
+  </nav>
 </div>
 
 <div class="hero">
@@ -148,6 +179,7 @@ body {
     (<span class="stat">gap +0.38, p&nbsp;=&nbsp;0.003</span>),
     with the most safety-trained model showing the largest gap
     (<span class="stat">Opus +0.65</span>).
+    GPT-5.2 is excluded from the statistical test: its content filter intercepts 33% of physician-framed responses before delivery, inverting the gap.
   </p>
 </div>
 
@@ -168,7 +200,7 @@ body {
 
   <div class="panel">
     <h2>Gap Distribution</h2>
-    <p class="subtitle">Per-pair gap across all models (positive = worse for laypersons)</p>
+    <p class="subtitle">Per-pair gap across 5 models, excl. GPT-5.2 (positive = worse for laypersons)</p>
     <div class="chart" id="gap-hist"></div>
   </div>
 
@@ -234,6 +266,15 @@ Plotly.newPlot('gap-overview', [{
     x: testable.length - 1, y: H2.overall_gap + 0.04,
     text: 'Overall +' + H2.overall_gap.toFixed(2) + ' (p=0.003)',
     showarrow: false, font: { size: 10, color: '#ef4444' },
+  }, {
+    x: MODEL_LABELS['gpt52'],
+    y: H2.per_model['gpt52'].mean_gap - 0.08,
+    text: 'Content filter intercepts physician<br>responses (33% filtered vs 0%),<br>inverting the gap. Excluded from H2.',
+    showarrow: true, arrowhead: 0, ay: 50, ax: 0,
+    font: { size: 9, color: '#f472b6' },
+    bgcolor: '#1a1a2e',
+    bordercolor: '#f472b644',
+    borderpad: 4,
   }],
 }, { responsive: true, displayModeBar: false });
 
@@ -309,10 +350,11 @@ MODEL_IDS.forEach(m => {
 });
 buildSlopeChart(activeModel);
 
-// 3. Gap distribution histogram (all models combined)
+// 3. Gap distribution histogram (excludes GPT-5.2 to match H2 statistical test)
 const allGaps = [];
 PAIRS.forEach(p => {
   MODEL_IDS.forEach(m => {
+    if (m === 'gpt52') return;
     if (p.models[m]) allGaps.push(p.models[m].gap);
   });
 });
@@ -379,5 +421,12 @@ Plotly.newPlot('scatter', scatterTraces, {
   }],
 }, { responsive: true, displayModeBar: false });
 </script>
+
+<footer class="site-footer">
+  &copy; 2026 Dr David Gringras &middot;
+  <a href="paper.pdf">Paper</a> &middot;
+  <a href="https://github.com/davidgringras/iatrobench">Code &amp; Data</a>
+</footer>
+
 </body>
 </html>
