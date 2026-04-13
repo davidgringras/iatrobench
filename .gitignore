@@ -1,0 +1,70 @@
+# Environment and secrets
+.env
+.env.*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+venv/
+
+# Results (raw data too large for git; derived/ is tracked)
+results/raw/
+results/batch_state/
+results/validation/
+results/pilot*_archive/
+results/audit/
+results/derived/calibration_*.json
+
+# Logs
+logs/
+*.lock
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE / tooling
+.claude/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Internal docs
+_docs/
+docs/option_e_plan.md
+
+# Submission bundles
+*.zip
+*.tar.gz
+
+# LaTeX auxiliaries
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+paper/*.pdf
+
+# Internal working documents
+paper/OVERNIGHT_LOG.md
+paper/debate_positions.md
+paper/debate_report.md
+paper/implementation_plan.md
+paper/review_triage_brief.md
+planning/quality-passes/
+
+# Pilot data archives (historical; final scenarios in data/scenarios/)
+data/scenarios_pilot1_archive/
+data/scenarios_pilot2_archive/

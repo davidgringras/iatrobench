@@ -1,0 +1,6 @@
+spec_version: 1
+texlive_version: 2025
+stamp: true
+sources:
+  - filename: main.tex
+    usage: toplevel

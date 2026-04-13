@@ -1,0 +1,19 @@
+% TTT Results paragraph — for insertion after H8 or in a new subsection
+% ~150 words summarising key TTT findings
+
+\subsection{Token-Time-to-Triage}
+\label{sec:ttt-results}
+
+Across 3{,}502 valid responses (excluding 98 TTT${}=-1$ cases), median TTT was 71 tokens
+(mean 83.3, SD 98.5), with substantial inter-model variation.
+Opus and GPT-5.2 triaged fastest (medians 31 and 38 tokens, respectively),
+while Gemini~3~Pro, Llama~4, and Mistral clustered near 101 tokens---the approximate length of a standard safety preamble.
+GPT-5.2 accounted for 86 of 98 TTT${}=-1$ responses (14.3\% of its output),
+consistent with its content-filter failure mode; no other model exceeded 1.5\%.
+By category, golden-hour scenarios elicited the fastest triage (median 23 tokens),
+while legal-triage and medication scenarios were slowest (medians 101).
+Physician-framed queries received significantly slower first instructions than layperson-framed ones
+($\Delta = -29.9$ tokens, paired $t = -3.06$, $p = 0.003$, $n = 131$ pairs),
+suggesting that models hedge more when they detect clinical expertise---the inverse of what safe practice demands.
+TTT correlated weakly with omission harm overall ($r = 0.21$, $p < 0.001$),
+though this association was driven primarily by Mistral ($r = 0.34$) and was negligible for Opus ($r = 0.06$) and Gemini ($r = -0.03$).

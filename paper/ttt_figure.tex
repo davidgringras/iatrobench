@@ -1,0 +1,84 @@
+% TTT Distribution by Model — boxplot figure
+% Requires: \usepackage{pgfplots}, \usepgfplotslibrary{statistics}, \pgfplotsset{compat=1.18}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=\columnwidth,
+    height=6.5cm,
+    ylabel={Token-Time-to-Triage},
+    ylabel style={font=\small},
+    ytick={0,50,100,150,200,250},
+    ymin=-10, ymax=270,
+    xtick={1,2,3,4,5,6},
+    xticklabels={Opus 4, GPT-5.2, Gemini 3, Llama 4, DeepSeek, Mistral},
+    xticklabel style={font=\footnotesize, rotate=25, anchor=east},
+    x tick label style={font=\footnotesize},
+    boxplot/draw direction=y,
+    boxplot={
+        box extend=0.45,
+        whisker extend=0.0,
+        every box/.style={fill=blue!15, draw=black!70},
+        every whisker/.style={black!70},
+        every median/.style={red!80!black, thick},
+    },
+    grid=major,
+    grid style={gray!20},
+    every axis plot/.append style={mark size=1pt, mark options={fill=black!40, draw=black!40}},
+    clip=false,
+]
+% Opus 4
+\addplot+[boxplot prepared={
+    lower whisker=1, lower quartile=13, median=31,
+    upper quartile=101, upper whisker=233},
+    boxplot/draw position=1] coordinates {};
+
+% GPT-5.2
+\addplot+[boxplot prepared={
+    lower whisker=0, lower quartile=10, median=38,
+    upper quartile=101, upper whisker=238},
+    boxplot/draw position=2] coordinates {};
+
+% Gemini 3 Pro
+\addplot+[boxplot prepared={
+    lower whisker=1, lower quartile=48, median=101,
+    upper quartile=114, upper whisker=213},
+    boxplot/draw position=3] coordinates {};
+
+% Llama 4 Maverick
+\addplot+[boxplot prepared={
+    lower whisker=0, lower quartile=38, median=101,
+    upper quartile=118, upper whisker=238},
+    boxplot/draw position=4] coordinates {};
+
+% DeepSeek-R1
+\addplot+[boxplot prepared={
+    lower whisker=1, lower quartile=13, median=45,
+    upper quartile=103, upper whisker=239},
+    boxplot/draw position=5] coordinates {};
+
+% Mistral Large 3
+\addplot+[boxplot prepared={
+    lower whisker=1, lower quartile=31, median=101,
+    upper quartile=101, upper whisker=206},
+    boxplot/draw position=6] coordinates {};
+
+% Annotation: safety-preamble line at ~101 tokens
+\draw[dashed, red!50!black, thin] (axis cs:0.4,101) -- (axis cs:6.6,101)
+    node[right, font=\tiny, red!50!black] {preamble};
+
+% TTT=-1 rates as text annotations below
+\node[font=\tiny, anchor=north] at (axis cs:1,-5) {0\%};
+\node[font=\tiny, anchor=north, red!70!black] at (axis cs:2,-5) {14.3\%};
+\node[font=\tiny, anchor=north] at (axis cs:3,-5) {0\%};
+\node[font=\tiny, anchor=north] at (axis cs:4,-5) {1.5\%};
+\node[font=\tiny, anchor=north] at (axis cs:5,-5) {0\%};
+\node[font=\tiny, anchor=north] at (axis cs:6,-5) {0.5\%};
+\node[font=\tiny, anchor=north east] at (axis cs:0.4,-5) {\textit{TTT$=-1$:}};
+
+\end{axis}
+\end{tikzpicture}
+\caption{Token-Time-to-Triage (TTT) distributions by model. Red line marks $\approx$101 tokens, the typical safety-preamble length. Percentages below show the rate of TTT${}=-1$ (no actionable instruction found). GPT-5.2's 14.3\% missing-instruction rate reflects its content-filter refusal pattern. Opus and DeepSeek triage fastest, with medians well below the preamble threshold.}
+\label{fig:ttt-boxplot}
+\end{figure}
