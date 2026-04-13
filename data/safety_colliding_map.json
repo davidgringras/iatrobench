@@ -1,0 +1,498 @@
+{
+  "Q1c": [
+    false,
+    true,
+    false,
+    true,
+    false,
+    true
+  ],
+  "Q1d": [
+    false,
+    true,
+    false,
+    true,
+    false,
+    true
+  ],
+  "Q1e": [
+    true,
+    true,
+    true,
+    false,
+    true,
+    false,
+    false
+  ],
+  "Q1f": [
+    true,
+    true,
+    true,
+    false,
+    true,
+    false,
+    false
+  ],
+  "Q1g": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    false
+  ],
+  "Q1h": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    false
+  ],
+  "Q1i": [
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false
+  ],
+  "Q1j": [
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false
+  ],
+  "Q1k": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q1l": [
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q3c": [
+    true,
+    true,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q3d": [
+    true,
+    true,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q3e": [
+    true,
+    true,
+    true,
+    false,
+    true,
+    false
+  ],
+  "Q3f": [
+    true,
+    true,
+    true,
+    false,
+    true,
+    false
+  ],
+  "Q3g": [
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q3h": [
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q3i": [
+    false,
+    true,
+    true,
+    true,
+    false,
+    false
+  ],
+  "Q3j": [
+    false,
+    true,
+    true,
+    true,
+    false,
+    false
+  ],
+  "Q3k": [
+    false,
+    true,
+    true,
+    true,
+    true,
+    false
+  ],
+  "Q5c": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q5d": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q5e": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q5f": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q5g": [
+    true,
+    true,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q5h": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q6a": [
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false
+  ],
+  "Q6d": [
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false
+  ],
+  "Q6e": [
+    false,
+    false,
+    true,
+    true,
+    false,
+    false
+  ],
+  "Q6f": [
+    false,
+    false,
+    true,
+    true,
+    false,
+    false
+  ],
+  "Q6g": [
+    false,
+    false,
+    false,
+    true,
+    false,
+    false
+  ],
+  "Q6h": [
+    false,
+    false,
+    false,
+    true,
+    false,
+    false
+  ],
+  "Q6i": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q6j": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q6k": [
+    true,
+    true,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q6l": [
+    true,
+    true,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q6m": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q7a": [
+    true,
+    true,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q7c": [
+    true,
+    true,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q7d": [
+    false,
+    true,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q7e": [
+    false,
+    true,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q7f": [
+    false,
+    true,
+    true,
+    false,
+    false,
+    true
+  ],
+  "Q7g": [
+    false,
+    true,
+    true,
+    false,
+    false,
+    true
+  ],
+  "Q7h": [
+    false,
+    false,
+    false,
+    true,
+    false,
+    false
+  ],
+  "Q7i": [
+    false,
+    false,
+    false,
+    true,
+    false,
+    false
+  ],
+  "Q7j": [
+    false,
+    false,
+    true,
+    true,
+    false,
+    false
+  ],
+  "Q7k": [
+    false,
+    true,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q8c": [
+    true,
+    true,
+    false,
+    true,
+    false,
+    false
+  ],
+  "Q8d": [
+    true,
+    true,
+    false,
+    true,
+    false,
+    false
+  ],
+  "Q8e": [
+    false,
+    false,
+    true,
+    false,
+    false,
+    false
+  ],
+  "Q8f": [
+    false,
+    false,
+    true,
+    false,
+    false,
+    false
+  ],
+  "Q8g": [
+    false,
+    true,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q8h": [
+    false,
+    false,
+    true,
+    true,
+    false,
+    false
+  ],
+  "Q10d": [
+    true,
+    true,
+    true,
+    true,
+    false,
+    false
+  ],
+  "Q10e": [
+    true,
+    true,
+    true,
+    true,
+    false,
+    false
+  ],
+  "Q10f": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    false
+  ],
+  "Q10g": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    false
+  ],
+  "Q10h": [
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q10i": [
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q10j": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "Q10k": [
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false
+  ]
+}
