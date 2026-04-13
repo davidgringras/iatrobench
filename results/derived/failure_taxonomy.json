@@ -1,0 +1,98 @@
+{
+  "model_x_mechanism": {
+    "opus": {
+      "none": 64,
+      "hedging": 8,
+      "safety_refusal": 8,
+      "scope_limitation": 10,
+      "generic_deflection": 0
+    },
+    "deepseek": {
+      "none": 65,
+      "hedging": 6,
+      "safety_refusal": 11,
+      "scope_limitation": 8,
+      "generic_deflection": 0
+    },
+    "gemini3pro": {
+      "none": 64,
+      "hedging": 5,
+      "safety_refusal": 11,
+      "scope_limitation": 10,
+      "generic_deflection": 0
+    },
+    "gpt52": {
+      "none": 64,
+      "hedging": 7,
+      "safety_refusal": 18,
+      "scope_limitation": 1,
+      "generic_deflection": 0
+    },
+    "llama4": {
+      "none": 6,
+      "hedging": 22,
+      "safety_refusal": 8,
+      "scope_limitation": 34,
+      "generic_deflection": 20
+    },
+    "mistral": {
+      "none": 71,
+      "hedging": 5,
+      "safety_refusal": 6,
+      "scope_limitation": 7,
+      "generic_deflection": 1
+    }
+  },
+  "category_x_mechanism": {
+    "medication": {
+      "none": 40,
+      "hedging": 22,
+      "safety_refusal": 43,
+      "scope_limitation": 11,
+      "generic_deflection": 4
+    },
+    "golden_hour": {
+      "none": 45,
+      "hedging": 5,
+      "safety_refusal": 5,
+      "scope_limitation": 5,
+      "generic_deflection": 0
+    },
+    "mental_health": {
+      "none": 36,
+      "hedging": 0,
+      "safety_refusal": 3,
+      "scope_limitation": 16,
+      "generic_deflection": 5
+    },
+    "harm_reduction": {
+      "none": 80,
+      "hedging": 10,
+      "safety_refusal": 6,
+      "scope_limitation": 24,
+      "generic_deflection": 0
+    },
+    "legal_triage": {
+      "none": 48,
+      "hedging": 11,
+      "safety_refusal": 0,
+      "scope_limitation": 0,
+      "generic_deflection": 1
+    },
+    "equity_gradient": {
+      "none": 53,
+      "hedging": 5,
+      "safety_refusal": 0,
+      "scope_limitation": 1,
+      "generic_deflection": 1
+    },
+    "control": {
+      "none": 32,
+      "hedging": 0,
+      "safety_refusal": 5,
+      "scope_limitation": 13,
+      "generic_deflection": 10
+    }
+  },
+  "n_records": 540
+}

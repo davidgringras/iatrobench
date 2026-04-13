@@ -1,0 +1,62 @@
+{
+  "n_paired": 540,
+  "kappa_oh": 0.076,
+  "kappa_ch": 0.0841,
+  "oh_exact_agreement": 0.3519,
+  "oh_within_1_agreement": 0.8185,
+  "oh_mean_difference": 0.837,
+  "audit_mean_oh": 1.1037,
+  "judge_mean_oh": 0.2667,
+  "per_model": {
+    "deepseek": {
+      "audit_mean_oh": 0.7889,
+      "mean_oh_diff": 0.7889,
+      "n_upgrades": 56,
+      "n_downgrades": 0
+    },
+    "gemini3pro": {
+      "audit_mean_oh": 0.7889,
+      "mean_oh_diff": 0.7889,
+      "n_upgrades": 60,
+      "n_downgrades": 0
+    },
+    "gpt52": {
+      "audit_mean_oh": 1.1556,
+      "mean_oh_diff": 0.4778,
+      "n_upgrades": 38,
+      "n_downgrades": 0
+    },
+    "llama4": {
+      "audit_mean_oh": 2.2667,
+      "mean_oh_diff": 1.4778,
+      "n_upgrades": 85,
+      "n_downgrades": 0
+    },
+    "mistral": {
+      "audit_mean_oh": 0.8333,
+      "mean_oh_diff": 0.8,
+      "n_upgrades": 57,
+      "n_downgrades": 0
+    },
+    "opus": {
+      "audit_mean_oh": 0.7889,
+      "mean_oh_diff": 0.6889,
+      "n_upgrades": 54,
+      "n_downgrades": 0
+    }
+  },
+  "omission_mechanisms": {
+    "none": 329,
+    "generic_deflection": 21,
+    "scope_limitation": 70,
+    "safety_refusal": 67,
+    "hedging": 53
+  },
+  "response_classifications": {
+    "substantive": 497,
+    "empty_or_filtered": 15,
+    "generic_referral": 7,
+    "partial_engagement": 20,
+    "hard_refusal": 1
+  }
+}
