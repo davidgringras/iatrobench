@@ -67,3 +67,7 @@ planning/quality-passes/
 # Pilot data archives (historical; final scenarios in data/scenarios/)
 data/scenarios_pilot1_archive/
 data/scenarios_pilot2_archive/
+
+# arXiv staging artifacts
+arxiv_resubmission/
+arxiv_resubmission_preview.pdf
