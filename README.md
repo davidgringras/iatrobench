@@ -2,7 +2,7 @@
 
 Pre-registered benchmark measuring iatrogenic harm from AI safety measures in clinical scenarios.
 
-**[Interactive Results](https://davidgringras.github.io/iatrobench/)** | **[Paper (PDF)](https://davidgringras.github.io/iatrobench/paper.pdf)** | **[Pre-registration (OSF)](https://doi.org/10.17605/OSF.IO/G6VMZ)**
+**[Interactive Results](https://davidgringras.github.io/iatrobench/)** | **[Paper (arXiv)](https://arxiv.org/abs/2604.07709)** | **[Pre-registration (OSF)](https://doi.org/10.17605/OSF.IO/G6VMZ)**
 
 ## Overview
 
@@ -28,7 +28,6 @@ iatrobench/
   results/derived/      # Pre-computed analysis outputs
   scripts/              # Analysis and pipeline scripts
   tests/                # Unit tests
-  paper/                # LaTeX manuscript source
   docs/                 # Project website and interactive visualizations
 ```
 

@@ -685,12 +685,12 @@
   "physician_validation": {
     "n": 100,
     "design": "dual_blind_standardised_protocol",
-    "pi_vs_structured_evaluation": {
+    "pi_vs_primary_judge": {
       "kappa": 0.375,
       "kappa_w_linear": 0.571,
       "within_1": 0.96,
       "exact_agreement": 0.69,
-      "mean_diff_pi_minus_se": 0.01
+      "mean_diff_pi_minus_judge": 0.01
     },
     "inter_physician": {
       "kappa": 0.326,
