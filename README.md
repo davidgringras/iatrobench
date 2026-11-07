@@ -1,5 +1,7 @@
 # IatroBench
 
+**A Pre-Registered Benchmark of Clinical Omission in Language Models**
+
 Pre-registered benchmark measuring iatrogenic harm from AI safety measures in clinical scenarios.
 
 **[Interactive Results](https://davidgringras.github.io/iatrobench/)** | **[Paper (arXiv)](https://arxiv.org/abs/2604.07709)** | **[Pre-registration (OSF)](https://doi.org/10.17605/OSF.IO/G6VMZ)**
@@ -85,12 +87,15 @@ The study was pre-registered on OSF before Phase 2 data collection:
 ## Citation
 
 ```bibtex
-@article{gringras2026iatrobench,
-  title={IatroBench: Pre-Registered Evidence of Iatrogenic Harm from AI Safety Measures},
-  author={Gringras, David},
-  year={2026},
-  url={https://github.com/davidgringras/iatrobench},
-  note={Preprint}
+@misc{gringras2026iatrobench,
+  title         = {IatroBench: A Pre-Registered Benchmark of Clinical Omission in Language Models},
+  author        = {Gringras, David},
+  year          = {2026},
+  eprint        = {2604.07709},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  doi           = {10.48550/arXiv.2604.07709},
+  url           = {https://arxiv.org/abs/2604.07709}
 }
 ```
 
